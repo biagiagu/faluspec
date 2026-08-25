@@ -1,0 +1,125 @@
+# Prompt para nueva sesión — FaLuSpec
+
+---
+
+## ▼ COPIAR DESDE ACÁ ▼
+
+Estoy trabajando en **FaLuSpec**, un formato propio para especificar trabajo de software de modo que
+una máquina pueda verificarlo. Está en **fase 0** (definir el formato; todavía no hay herramientas).
+
+Leé en este orden antes de proponer nada:
+
+1. `README.md` — qué es y el plan de 3 fases con sus gates.
+2. `docs/ESPECIFICACION.md` — el formato. Es el entregable central de la fase 0.
+3. `docs/decisiones/001-por-que-existe.md` — contra qué se comparó y qué se tomó de cada alternativa.
+4. El **Log de sesiones** al final de este archivo — empezá por la entrada de arriba.
+
+**Regla dura del proyecto:** la especificación define *la forma*, nunca *el contenido*. Si una regla
+no se puede enunciar sin nombrar un proyecto, un cliente o un stack concreto, no va en la spec.
+
+**Próximo paso** (movimiento 2 de la fase 0): probar el formato contra un caso real que hoy no está
+especificado, para ver si lo banca. El caso elegido es la parametrización pendiente de cliente del
+proyecto de origen, en `c:\Proyectos\011-SeguimientoDePedidos` — buscar ahí `TODO(cliente)` y
+`CLIENTE.com.ar`. Si necesitás leer ese repo, pedime que lo agregue como working directory.
+
+## ▲ COPIAR HASTA ACÁ ▲
+
+---
+
+## Resumen permanente
+
+**Qué es.** Un formato para especificar trabajo de software que produce requisitos verificables por
+máquina, no sólo legibles por humanos. La diferencia con todo lo demás del nicho: cada criterio sabe
+**dónde vive en el código** (ancla a un símbolo) y **con qué se comprueba** (estrategia de test).
+
+**De dónde salió.** No se diseñó de cero: se destiló de una forma de trabajo que ya funcionaba en dos
+proyectos reales. El proyecto de origen es `c:\Proyectos\011-SeguimientoDePedidos` — sirve como
+referencia y banco de pruebas, pero **su contenido no se copia acá**: se extrae el patrón.
+
+**El átomo** (la unidad mínima, de la que se deriva todo lo demás):
+
+```markdown
+### E4-07.2 — Reintento con espera creciente
+
+**Dado** un envío que falló por error de red, **cuando** el reintento se programa,
+**entonces** la espera es el doble de la anterior, con un techo de 30 minutos.
+
+- ancla: `src/notificaciones/reintento.ts#calcularEspera`
+- verifica: `unit` → `reintento.test.ts::espera creciente con techo`
+```
+
+**Constructos:** criterio → ítem → épica → hito. Identificadores `E4` / `E4-07` / `E4-07.2` / `H3`.
+
+**Para quién:** equipos chicos y solistas que trabajan con agentes y quieren el plan dentro del repo,
+versionado junto al código. No compite con Jira ni Linear.
+
+---
+
+## Stack y decisiones cerradas
+
+### Del proyecto
+
+- **Fase 0 es sólo documentos.** No escribir CLI hasta cerrar el gate de la fase 1. Un validador
+  contra un formato que todavía no está definido no valida nada.
+- **Lenguaje del futuro CLI: sin decidir.** Node/TypeScript es lo natural por el resto del ecosistema
+  del usuario, pero no está comprometido.
+- **Rama actual: `master`.** Pendiente decidir si pasa a `main` a secas o al esquema
+  `develop → test → main` que el usuario usa en proyectos desplegables. Esto no tiene ambientes, así
+  que probablemente alcance con `main`.
+- **Sin commits todavía.** Todo el contenido está como archivos sin trackear.
+
+### Del formato (ya tomadas, revisables con argumento)
+
+- **Las anclas apuntan a símbolos, nunca a números de línea.** Decisión fundacional: un símbolo se
+  resuelve mecánicamente, una línea se pudre en silencio. Es lo que hace posible el validador, y es
+  la corrección principal respecto del método original.
+- **Un criterio sin ancla es válido mientras su ítem no esté `done`.** Antes de implementar, exigir
+  ancla obliga a inventarla.
+- **`verifica: manual` es un valor legítimo**, no un pendiente. Existe para no mentir en el documento
+  y para poder medir qué porcentaje del proyecto depende de verificación humana.
+- **Las dependencias pueden cruzar épicas.** Las épicas agrupan por tema, no aíslan.
+- **Los identificadores no se reciclan ni se renumeran.** Un hueco es información.
+- **De `done` no se vuelve.** Si algo cerrado se rompió, es un ítem nuevo con su propio identificador.
+- **Las épicas no tienen estado propio**, se deriva del de sus ítems.
+
+### Abiertas (ver §9 de la especificación)
+
+Ubicación de los archivos de ítem · criterios compartidos entre ítems · versionado del formato ·
+si las prioridades son parte del formato o de cada proyecto.
+
+### Tomado de otras herramientas
+
+Se evaluaron OpenSpec v1.10.0 y github/spec-kit ejecutando sus CLI. **Se toma:** separación entre
+vigente e histórico, validación como comando que falla en CI, constitución de principios, directorio
+como unidad de trabajo. **No se toma:** renunciar a la capa de producto, delegar el plan a GitHub,
+ciclos de diez comandos.
+
+---
+
+## Log de sesiones
+
+### 2026-08-25 — Fundación del repo
+
+**Qué se hizo.** Se creó el repo desde cero y se escribió la especificación v0.1 del formato
+(9 secciones: átomo, ítem, épica, hito, gramática de IDs, estados, fuente vs. vistas, decisiones
+abiertas), el README con el plan de 3 fases, y el registro de decisión 001.
+
+**Cómo se llegó acá.** La sesión arrancó evaluando si adoptar OpenSpec o Spec Kit en el proyecto de
+origen. Al auditar el método propio se encontró que su formato de criterios ya era **más rico** que el
+de ambas herramientas —identificador de tercer nivel, ancla al código, estrategia de test—, así que
+adoptarlas habría sido perder información. De ahí salió la idea de formalizarlo como formato propio.
+Las tres piezas de análisis están enlazadas en `docs/decisiones/001-por-que-existe.md`.
+
+**Qué se decidió.** Repo separado del proyecto de origen: la separación física es lo que hace cumplible
+la regla de no mezclar forma con contenido. Nombre elegido: FaLuSpec. Las decisiones del formato están
+listadas arriba en «Stack y decisiones cerradas».
+
+**Pendiente.** Nada bloqueante. Falta decidir la rama y hacer el commit inicial.
+
+**Próximo paso.** Movimiento 2 de la fase 0: escribir la parametrización pendiente de cliente del
+proyecto de origen como ítems y criterios en el formato nuevo. Es trabajo real, hoy sólo prosa suelta,
+y sin dependencias con identificadores existentes. Si el formato no lo banca, mejor descubrirlo ahora
+que con cincuenta ítems migrados.
+
+**Estado del repo.** `master`, sin commits. Archivos sin trackear: `README.md`, `.gitignore`,
+`docs/`, `plantilla/`, este archivo.
