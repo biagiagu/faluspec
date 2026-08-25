@@ -13,14 +13,14 @@ Leé en este orden antes de proponer nada:
 2. `docs/ESPECIFICACION.md` — el formato. Es el entregable central de la fase 0.
 3. `docs/decisiones/001-por-que-existe.md` — contra qué se comparó y qué se tomó de cada alternativa.
 4. El **Log de sesiones** al final de este archivo — empezá por la entrada de arriba.
+5. `docs/pruebas/001-parametrizacion-cliente/HALLAZGOS.md` — la prueba del formato contra un caso
+   real, ya hecha. Sus 7 propuestas son la agenda de la v0.2.
 
 **Regla dura del proyecto:** la especificación define *la forma*, nunca *el contenido*. Si una regla
 no se puede enunciar sin nombrar un proyecto, un cliente o un stack concreto, no va en la spec.
 
-**Próximo paso** (movimiento 2 de la fase 0): probar el formato contra un caso real que hoy no está
-especificado, para ver si lo banca. El caso elegido es la parametrización pendiente de cliente del
-proyecto de origen, en `c:\Proyectos\011-SeguimientoDePedidos` — buscar ahí `TODO(cliente)` y
-`CLIENTE.com.ar`. Si necesitás leer ese repo, pedime que lo agregue como working directory.
+**Próximo paso** (movimiento 3 de la fase 0): decidir cuáles de los 7 hallazgos entran en la
+especificación v0.2 y aplicarlos. La spec sigue en v0.1 intacta: la prueba no la tocó.
 
 ## ▲ COPIAR HASTA ACÁ ▲
 
@@ -97,6 +97,39 @@ ciclos de diez comandos.
 ---
 
 ## Log de sesiones
+
+### 2026-08-25 (2) — El formato contra un caso real
+
+**Qué se hizo.** Movimiento 2 de la fase 0. Se escribió la parametrización pendiente de cliente del
+proyecto de origen en formato FaLuSpec: 1 épica, 1 hito, 8 ítems, 21 criterios, en
+`docs/pruebas/001-parametrizacion-cliente/`. Es un **banco de pruebas**, no la plantilla — está
+marcado como tal en su README y nada de ahí se copia a `plantilla/`.
+
+**Qué se encontró.** El formato aguantó: ningún constructo hubo que forzarlo ni inventarlo. Pero el
+caso mostró que la v0.1 se escribió pensando en funcionalidad nueva, y esto era configuración sobre
+código que ya existe. Salieron 7 huecos, en `HALLAZGOS.md`. Los tres que importan:
+
+1. **Falta el tipo de verificación `estatica`** — hay criterios que se comprueban con un grep en CI y
+   no son ni unit, ni integración, ni e2e, ni manual.
+2. **Hay criterios sin ancla posible por naturaleza** (DNS, íconos, criterios de alcance repositorio).
+   La regla «ítem `done` ⇒ tiene ancla» los volvería invalidables para siempre. La ausencia de ancla
+   debería ser un valor declarable, como lo es `manual`.
+3. **`blocked` no dice qué se está esperando** — la causa va al historial, así que el bloqueo queda
+   fuera de toda vista. Propuesta: campo opcional `bloqueado_por`.
+
+Los otros cuatro: granularidad del ancla dentro de un símbolo · si valen los símbolos no exportados
+(hay que decidirlo antes de la fase 2, condiciona el validador) · criterios que afirman algo sobre su
+propia suite · `verifica` como encargo de test y no sólo como registro.
+
+**Datos del caso.** 48% de los criterios quedaron en `manual` — confirma que `manual` no es un parche:
+sin él, la mitad de esta épica sería inexpresable. 24% sin ancla. El ejercicio produjo 7 nombres de
+test que todavía no existen.
+
+**Qué NO se decidió.** La spec sigue en v0.1, sin tocar. Aplicar los hallazgos es el movimiento 3.
+
+**Pendiente.** El caso está escrito y sin commitear.
+
+**Próximo paso.** Decidir cuáles de los 7 hallazgos entran en la v0.2.
 
 ### 2026-08-25 — Fundación del repo
 

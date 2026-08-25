@@ -44,6 +44,7 @@ resuelve nada.
 ```
 docs/ESPECIFICACION.md    la definición del formato
 docs/decisiones/          por qué existe y contra qué se comparó
+docs/pruebas/             casos reales escritos en el formato, para estrellarlo contra algo
 plantilla/                el esqueleto que se clona para un proyecto nuevo
 ```
 
