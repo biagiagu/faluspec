@@ -63,10 +63,10 @@ versionado junto al código. No compite con Jira ni Linear.
   contra un formato que todavía no está definido no valida nada.
 - **Lenguaje del futuro CLI: sin decidir.** Node/TypeScript es lo natural por el resto del ecosistema
   del usuario, pero no está comprometido.
-- **Rama actual: `master`.** Pendiente decidir si pasa a `main` a secas o al esquema
-  `develop → test → main` que el usuario usa en proyectos desplegables. Esto no tiene ambientes, así
-  que probablemente alcance con `main`.
-- **Sin commits todavía.** Todo el contenido está como archivos sin trackear.
+- **Rama única: `main`.** Se descartó el esquema `develop → test → main` que el usuario usa en
+  proyectos desplegables: esto no tiene ambientes ni deploy. Si en la fase 2 aparece un CLI publicable,
+  reevaluar.
+- **Sin remoto configurado.** El repo es local. Publicarlo es decisión de la fase 3.
 
 ### Del formato (ya tomadas, revisables con argumento)
 
@@ -114,12 +114,12 @@ Las tres piezas de análisis están enlazadas en `docs/decisiones/001-por-que-ex
 la regla de no mezclar forma con contenido. Nombre elegido: FaLuSpec. Las decisiones del formato están
 listadas arriba en «Stack y decisiones cerradas».
 
-**Pendiente.** Nada bloqueante. Falta decidir la rama y hacer el commit inicial.
+**Pendiente.** Nada bloqueante.
 
 **Próximo paso.** Movimiento 2 de la fase 0: escribir la parametrización pendiente de cliente del
 proyecto de origen como ítems y criterios en el formato nuevo. Es trabajo real, hoy sólo prosa suelta,
 y sin dependencias con identificadores existentes. Si el formato no lo banca, mejor descubrirlo ahora
 que con cincuenta ítems migrados.
 
-**Estado del repo.** `master`, sin commits. Archivos sin trackear: `README.md`, `.gitignore`,
-`docs/`, `plantilla/`, este archivo.
+**Estado del repo.** `main`, commit inicial `dd4e419` con los 9 archivos. Working tree limpio.
+Sin remoto.
