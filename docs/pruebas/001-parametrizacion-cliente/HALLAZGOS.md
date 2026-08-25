@@ -111,3 +111,26 @@ declarada.
   de tabla; separarlas fue mecánico y el resultado se lee mejor.
 - **`manual` como valor legítimo.** Sostiene el 48% de esta épica. Si no existiera, la mitad del caso
   sería inexpresable o mentiroso.
+
+---
+
+## Qué se hizo con esto
+
+Los siete hallazgos se aceptaron y están aplicados en la **especificación v0.2**. El caso de arriba se
+reescribió con la sintaxis nueva, así que sirve además como ejemplo de las formas que la 0.2 agrega.
+
+| Hallazgo | Cómo quedó en la spec |
+|---|---|
+| 1 · chequeo estático | Tipo `estatica` en §2.4 |
+| 2 · ancla imposible | `ancla: ninguna — <motivo>`, declaración válida en `done` (§2.2, §2.3) |
+| 3 · granularidad | Un nivel de propiedad dentro del símbolo, con la advertencia (§2.3) |
+| 4 · símbolos privados | Valen, dicho explícitamente (§2.3) |
+| 5 · criterio sobre su suite | Es uno de los tres motivos de `ninguna` (§2.3) |
+| 6 · bloqueo opaco | Campo `bloqueado_por`, obligatorio en `blocked` (§3.2, §3.3) |
+| 7 · encargo de test | §2.4, «la verificación se escribe antes de implementar» |
+
+También apareció uno **tardío**, al migrar el caso a la sintaxis nueva: las reglas de validez de §2.2
+están escritas asumiendo que el contenedor del criterio es un **ítem** («si el ítem que lo contiene
+está `done`…»). Los criterios de épica —que §4 sí admite— quedan sin régimen: una épica no tiene
+estado propio, así que nunca dispara la exigencia de ancla. Quedó anotado como decisión abierta §9.5,
+no inventado sobre la marcha.

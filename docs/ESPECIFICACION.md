@@ -1,6 +1,6 @@
 # FaLuSpec — especificación del formato
 
-> Versión 0.1 · borrador · 2026-08-25
+> Versión 0.2 · borrador · 2026-08-25
 >
 > Este documento define **la forma**, con independencia de cualquier proyecto. Ninguna regla de acá
 > puede mencionar un dominio, un cliente ni un stack concreto. Si una regla no se puede enunciar sin
@@ -60,16 +60,21 @@ Un criterio es **válido** cuando:
 
 1. Su identificador respeta la gramática de §6 y es único en todo el proyecto.
 2. Su escenario nombra una condición observable desde afuera del código.
-3. Si el ítem que lo contiene está en estado `done`, tiene al menos un `ancla` y una `verifica`.
-4. Cada `ancla` resuelve a un símbolo existente.
+3. Si el ítem que lo contiene está en estado `done`, **declara** al menos un `ancla` y una `verifica`.
+4. Cada `ancla` resuelve a algo que existe, o es `ninguna` con su motivo (§2.3).
 5. Su `verifica` declara un tipo de los definidos en §2.4.
 
 Un criterio de un ítem que **no** está `done` puede no tener ancla ni verificación: todavía no está
 implementado, y exigirle ancla obligaría a inventarla.
 
+**Declarar no es tener.** Hay criterios que no van a tener ancla nunca, y no por falta de trabajo:
+el estado que afirman vive fuera del repositorio, o su alcance es el repositorio entero. Para ésos,
+`ancla: ninguna — <motivo>` es una declaración válida y suficiente. Lo que la regla 3 prohíbe es el
+silencio, no la ausencia.
+
 ### 2.3 El ancla
 
-El ancla dice **dónde vive la implementación** de ese criterio. Su forma es:
+El ancla dice **dónde vive la implementación** de ese criterio. Su forma normal es:
 
 ```
 ruta/al/archivo.ext#simboloCalificado
@@ -80,12 +85,47 @@ mecánicamente: si se renombró o se borró, la validación falla y avisa. Un n�
 silencio — basta que alguien agregue una línea más arriba para que apunte a otra cosa, sin que nada
 lo note.
 
+El símbolo **no necesita estar exportado**. Lo que hay que parametrizar o corregir suele ser una
+constante privada del módulo, y exigir que sea pública para poder anclarla sería dejar que el formato
+decida el diseño del código.
+
+Se admite **un nivel de profundidad** dentro del símbolo (`#esquema.CLAVE`) cuando el criterio habla
+de una parte y no del todo. Uno solo: si para localizar el criterio hace falta bajar más, el ancla
+empieza a parecerse a un número de línea, y el problema probablemente sea el diseño del código.
+
+#### Las otras dos formas
+
+| Forma | Cuándo |
+|---|---|
+| `ruta/al/archivo.ext` | El archivo no tiene símbolos que nombrar: un binario, un archivo de configuración, un conjunto de datos. |
+| `ninguna — <motivo>` | El criterio no tiene dónde anclarse, y eso es permanente. |
+
+El ancla a archivo entero vale **sólo** cuando no hay símbolo posible. Si el archivo tiene símbolos,
+hay que nombrar uno: usarlo como escape convierte el ancla en una ruta y le saca lo único que la hacía
+verificable.
+
+`ninguna` **es una declaración, no un hueco.** Lleva motivo obligatorio, y existe para tres casos que
+aparecen de verdad:
+
+- lo que el criterio afirma vive **fuera del repositorio** — un registro DNS, la consola de un
+  proveedor, un archivo que nunca se versiona;
+- el alcance del criterio es **el repositorio entero** («no queda ninguna ocurrencia de X»), y por lo
+  tanto no hay un lugar donde mirar;
+- el trabajo **es el test mismo**, y entonces la verificación ya dice dónde.
+
+Es el mismo movimiento que `manual` en §2.4: nombrar lo que no se puede hacer, en vez de dejar un
+vacío que no se distingue de un olvido. Y habilita la misma medición — qué parte del proyecto **no
+vive en el código** es un dato de gestión, no un accidente.
+
+#### Cuántas
+
 Un criterio puede tener **más de un ancla** cuando su implementación está genuinamente repartida.
 Si necesita más de tres, es señal de que el criterio es demasiado grande y conviene partirlo.
 
 Hay criterios que afirman una **ausencia** («no se registra el dato en el log»). Anclarlos al lugar
 donde la ausencia debe sostenerse es correcto y suficiente: el ancla marca dónde miraría alguien que
-quiera romperlo.
+quiera romperlo. Cuando la ausencia no tiene un lugar sino que abarca el repositorio, el ancla es
+`ninguna` y la verificación es `estatica`.
 
 ### 2.4 La verificación
 
@@ -96,14 +136,27 @@ Declara cómo se comprueba el criterio:
 | `unit` | Test unitario, con dependencias externas simuladas. |
 | `integracion` | Test contra dependencias reales (base de datos, servicios levantados). |
 | `e2e` | Recorrido completo por la interfaz o la API pública. |
+| `estatica` | Chequeo sobre el repositorio y no sobre el sistema corriendo. Corre en CI y rompe el build. |
 | `manual` | Se comprueba a mano. Valor legítimo, no un pendiente. |
 
 `manual` existe a propósito. Hay criterios que no se automatizan de forma razonable, y forzar un tipo
 automatizado sería mentir en el documento. Al ser un valor explícito, además se puede **medir**:
 qué porcentaje del proyecto depende de verificación humana es un dato de gestión, no un accidente.
 
+`estatica` es para los criterios que afirman algo del **repositorio** y no del sistema: que un valor
+heredado no sobreviva en ningún archivo, que ningún secreto viaje versionado, que no quede una marca
+de pendiente. No es un test —no ejecuta el producto— pero tampoco es manual: corre solo y falla el
+build. Sin este tipo, esos criterios sólo se pueden escribir mintiendo sobre cómo se comprueban.
+
 Cuando el tipo no es `manual`, la verificación **debería** nombrar el test concreto. Eso habilita el
 reporte de cobertura por criterio: qué criterios tienen test y cuáles se quedaron sin.
+
+#### La verificación se escribe antes de implementar
+
+Nombrar el test antes de que exista no es adelantarse: es la parte que convierte al criterio en una
+**orden de trabajo**. Un criterio con `verifica` completa le dice a quien lo implemente —persona o
+agente— qué archivo tocar y cómo se va a llamar la prueba que lo cierra. El nombre del test es parte
+de la especificación; lo que queda después es sólo escribirlo.
 
 ---
 
@@ -148,6 +201,7 @@ para no tener que revisar a mano qué no salió.
 | `prioridad` | sí | Uno de los niveles definidos por el proyecto en su constitución. |
 | `estado` | sí | Uno de §7. |
 | `fecha_estado` | condicional | Obligatorio cuando el estado es `done` o `blocked`. |
+| `bloqueado_por` | condicional | Obligatorio cuando el estado es `blocked`. Una línea: qué se está esperando, y de quién. |
 | `depende_de` | no | Lista de identificadores de ítems que deben estar `done` antes de empezar éste. |
 
 El proyecto puede agregar campos propios — sprint, responsable, estimación. La validación los ignora,
@@ -160,6 +214,12 @@ pero las vistas pueden usarlos.
 3. Un ítem `done` tiene `fecha_estado`.
 4. Un ítem `done` tiene al menos un criterio, y todos sus criterios son válidos según §2.2.
 5. Un ítem no puede estar `done` si alguno de sus `depende_de` no lo está.
+6. Un ítem `blocked` tiene `bloqueado_por`.
+
+**Un bloqueo tiene que ser consultable.** El detalle de la causa va al historial, pero si el
+encabezado no dice qué se espera, la pregunta más frecuente de cualquier revisión de estado —qué
+está trabado y por quién— obliga a leer prosa ítem por ítem, y ninguna vista la puede responder.
+`bloqueado_por` es una línea de texto libre, no un sistema de tickets.
 
 **Las dependencias pueden cruzar épicas.** Las épicas agrupan por tema, no aíslan: prohibir el cruce
 obligaría a inventar épicas artificiales para acomodar el grafo.
@@ -230,7 +290,7 @@ año después.
 | `todo` | Especificado, no empezado. |
 | `wip` | En ejecución. |
 | `done` | Cumple todos sus criterios y el DoD del proyecto. |
-| `blocked` | No puede avanzar por una causa externa, que se registra en el historial. |
+| `blocked` | No puede avanzar por una causa externa. Qué se espera va en `bloqueado_por`; el detalle, en el historial. |
 
 Transiciones legales:
 
@@ -267,10 +327,31 @@ las vistas no se pueden validar ni regenerar, y dos personas editándolas chocan
 Cuestiones sobre las que el formato todavía no se comprometió. Se resuelven con uso, no discutiendo.
 
 1. **Ubicación de los archivos de ítem.** ¿Un directorio plano, o uno por épica? Plano es más simple
-   de recorrer; por épica escala mejor a cientos de ítems.
+   de recorrer; por épica escala mejor a cientos de ítems. *La prueba 001 no dio evidencia: con ocho
+   ítems de una sola épica, plano es cómodo y no prueba nada. Hace falta un caso con varias épicas
+   vivas a la vez.*
 2. **Criterios compartidos entre ítems.** Hoy no existen. Si aparece la necesidad real, habrá que
-   decidir entre duplicar o referenciar.
+   decidir entre duplicar o referenciar. *La prueba 001 no la hizo aparecer: sus criterios se repiten
+   en espíritu, pero cada uno tiene su propia ancla.*
 3. **Versionado del formato.** Un proyecto debería declarar contra qué versión de FaLuSpec está
-   escrito, para que la validación sepa qué reglas aplicar.
+   escrito, para que la validación sepa qué reglas aplicar. *Con la 0.2 ya hay dos versiones y la
+   segunda agrega valores que la primera rechazaría. La decisión dejó de ser hipotética.*
 4. **Prioridades.** Hoy las define cada proyecto en su constitución. Podrían ser parte del formato,
    a costa de imponer un esquema.
+5. **Régimen de los criterios de épica.** Las reglas de §2.2 están escritas suponiendo que el
+   contenedor del criterio es un ítem, y una épica no tiene estado propio (§4) — así que sus criterios
+   nunca disparan la exigencia de ancla y verificación. ¿Se les aplica el mismo régimen que a los de
+   ítem, uno más laxo, o directamente ninguno?
+
+---
+
+## 10. Historial de versiones
+
+| Versión | Fecha | Qué cambió |
+|---|---|---|
+| 0.1 | 2026-08-25 | Primera definición: los cuatro constructos, la gramática de identificadores, los estados y sus transiciones. |
+| 0.2 | 2026-08-25 | Tipo de verificación `estatica` · ancla a archivo entero y ancla `ninguna` declarada · símbolos no exportados y un nivel de propiedad · `bloqueado_por` · la verificación como encargo. |
+
+Los cambios de la 0.2 no salieron de discutir el formato sino de **escribir un caso real con él** y
+anotar dónde crujía:
+[`docs/pruebas/001-parametrizacion-cliente/HALLAZGOS.md`](pruebas/001-parametrizacion-cliente/HALLAZGOS.md).

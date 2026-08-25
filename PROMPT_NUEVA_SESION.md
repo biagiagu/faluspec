@@ -10,17 +10,21 @@ una máquina pueda verificarlo. Está en **fase 0** (definir el formato; todaví
 Leé en este orden antes de proponer nada:
 
 1. `README.md` — qué es y el plan de 3 fases con sus gates.
-2. `docs/ESPECIFICACION.md` — el formato. Es el entregable central de la fase 0.
+2. `docs/ESPECIFICACION.md` — el formato, hoy en **v0.2**. Es el entregable central de la fase 0.
 3. `docs/decisiones/001-por-que-existe.md` — contra qué se comparó y qué se tomó de cada alternativa.
 4. El **Log de sesiones** al final de este archivo — empezá por la entrada de arriba.
-5. `docs/pruebas/001-parametrizacion-cliente/HALLAZGOS.md` — la prueba del formato contra un caso
-   real, ya hecha. Sus 7 propuestas son la agenda de la v0.2.
+5. `docs/pruebas/001-parametrizacion-cliente/` — un caso real escrito en el formato, y los hallazgos
+   que salieron de escribirlo. Es el banco de pruebas: **su contenido no se generaliza a la spec ni se
+   copia a la plantilla.**
 
 **Regla dura del proyecto:** la especificación define *la forma*, nunca *el contenido*. Si una regla
 no se puede enunciar sin nombrar un proyecto, un cliente o un stack concreto, no va en la spec.
 
-**Próximo paso** (movimiento 3 de la fase 0): decidir cuáles de los 7 hallazgos entran en la
-especificación v0.2 y aplicarlos. La spec sigue en v0.1 intacta: la prueba no la tocó.
+**Próximo paso** (movimiento 4 de la fase 0): llenar `plantilla/`, que hoy está vacía. Es lo que falta
+para el gate de la fase 0 — «un proyecto nuevo arranca desde la plantilla en horas». Necesita al menos
+una constitución base (principios, prioridades, definición de listo), el esqueleto de `backlog/` con
+un ítem de ejemplo, y el plan de hitos. Ojo con la regla dura: el ejemplo se inventa, no se copia del
+banco de pruebas.
 
 ## ▲ COPIAR HASTA ACÁ ▲
 
@@ -82,10 +86,29 @@ versionado junto al código. No compite con Jira ni Linear.
 - **De `done` no se vuelve.** Si algo cerrado se rompió, es un ítem nuevo con su propio identificador.
 - **Las épicas no tienen estado propio**, se deriva del de sus ítems.
 
+Agregadas en la v0.2, todas salidas de la prueba 001:
+
+- **`estatica` es un tipo de verificación**, para criterios que afirman algo del repositorio y no del
+  sistema corriendo. Corre en CI y falla el build.
+- **`ancla: ninguna — <motivo>` es una declaración válida**, incluso en `done`. Mismo movimiento que
+  `manual`: nombrar lo que no se puede hacer, en vez de dejar un vacío indistinguible de un olvido.
+  Tres motivos previstos: el estado vive fuera del repo · el alcance es el repo entero · el trabajo es
+  el test mismo.
+- **El ancla puede apuntar a un archivo entero** cuando ese archivo no tiene símbolos (binario, config).
+  Sólo entonces: si tiene símbolos, hay que nombrar uno.
+- **Los símbolos no exportados valen como ancla**, y se admite un nivel de propiedad (`#esquema.CLAVE`).
+  Uno solo — más abajo, el ancla se parece a un número de línea.
+- **`bloqueado_por` es obligatorio en `blocked`.** Sin él, el bloqueo no es consultable por ninguna vista.
+
 ### Abiertas (ver §9 de la especificación)
 
 Ubicación de los archivos de ítem · criterios compartidos entre ítems · versionado del formato ·
-si las prioridades son parte del formato o de cada proyecto.
+si las prioridades son parte del formato o de cada proyecto · qué régimen de validez tienen los
+criterios de épica.
+
+Las dos primeras siguen abiertas **porque la prueba 001 no dio evidencia**, no por falta de discusión.
+La tercera dejó de ser hipotética: ya hay dos versiones del formato, y la segunda acepta cosas que la
+primera rechazaría.
 
 ### Tomado de otras herramientas
 
@@ -97,6 +120,28 @@ ciclos de diez comandos.
 ---
 
 ## Log de sesiones
+
+### 2026-08-25 (3) — Especificación v0.2
+
+**Qué se hizo.** Se aceptaron y aplicaron los 7 hallazgos de la prueba 001. La spec pasó a **v0.2** y
+ganó una §10 con historial de versiones. El caso de prueba se reescribió con la sintaxis nueva, así
+que además sirve de ejemplo de las formas que la 0.2 agrega. Qué hallazgo fue a qué sección está en la
+tabla al final de `HALLAZGOS.md`.
+
+**Lo que cambió del formato.** Está listado arriba, en «Stack y decisiones cerradas». El resumen: el
+formato dejó de suponer que todo criterio vive en un símbolo del repositorio. Hay trabajo real cuyo
+estado vive afuera —DNS, consolas de proveedores— o cuyo alcance es el repositorio entero, y la v0.1
+sólo lo podía expresar mintiendo o dejando huecos.
+
+**Qué apareció al migrar el caso.** Un hallazgo tardío: las reglas de validez del criterio están
+escritas suponiendo que su contenedor es un **ítem**, así que los criterios de épica quedan sin
+régimen. Se anotó como decisión abierta §9.5 en vez de resolverlo sobre la marcha.
+
+**Pendiente.** Nada bloqueante.
+
+**Próximo paso.** Movimiento 4: llenar `plantilla/`. Es lo único que falta para el gate de la fase 0.
+
+**Estado del repo.** `main`, sin remoto.
 
 ### 2026-08-25 (2) — El formato contra un caso real
 
@@ -127,7 +172,7 @@ test que todavía no existen.
 
 **Qué NO se decidió.** La spec sigue en v0.1, sin tocar. Aplicar los hallazgos es el movimiento 3.
 
-**Pendiente.** El caso está escrito y sin commitear.
+**Pendiente.** Resuelto en la sesión siguiente.
 
 **Próximo paso.** Decidir cuáles de los 7 hallazgos entran en la v0.2.
 
