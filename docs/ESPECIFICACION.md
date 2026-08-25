@@ -335,10 +335,17 @@ Cuestiones sobre las que el formato todavía no se comprometió. Se resuelven co
    en espíritu, pero cada uno tiene su propia ancla.*
 3. **Versionado del formato.** Un proyecto debería declarar contra qué versión de FaLuSpec está
    escrito, para que la validación sepa qué reglas aplicar. *Con la 0.2 ya hay dos versiones y la
-   segunda agrega valores que la primera rechazaría. La decisión dejó de ser hipotética.*
+   segunda agrega valores que la primera rechazaría: la decisión dejó de ser hipotética. La plantilla
+   se adelantó con un campo en la constitución («escrito contra FaLuSpec: 0.2»); falta decidir si el
+   formato lo exige y dónde.*
 4. **Prioridades.** Hoy las define cada proyecto en su constitución. Podrían ser parte del formato,
    a costa de imponer un esquema.
-5. **Régimen de los criterios de épica.** Las reglas de §2.2 están escritas suponiendo que el
+5. **Dónde viven la épica y el historial.** §3.1 dice que un ítem es un archivo, pero §4 no dice si
+   la épica lo es, y §3.4 manda el historial «aparte» sin decir aparte dónde: ¿otra sección del mismo
+   archivo, otro archivo, otro directorio? Son dos huecos del formato, no decisiones de cada proyecto.
+   La plantilla elige un default para poder arrancar —épica como archivo junto a sus ítems, historial
+   como última sección del ítem— y lo declara como elección suya.
+6. **Régimen de los criterios de épica.** Las reglas de §2.2 están escritas suponiendo que el
    contenedor del criterio es un ítem, y una épica no tiene estado propio (§4) — así que sus criterios
    nunca disparan la exigencia de ancla y verificación. ¿Se les aplica el mismo régimen que a los de
    ítem, uno más laxo, o directamente ninguno?

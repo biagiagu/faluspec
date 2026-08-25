@@ -132,5 +132,5 @@ reescribió con la sintaxis nueva, así que sirve además como ejemplo de las fo
 También apareció uno **tardío**, al migrar el caso a la sintaxis nueva: las reglas de validez de §2.2
 están escritas asumiendo que el contenedor del criterio es un **ítem** («si el ítem que lo contiene
 está `done`…»). Los criterios de épica —que §4 sí admite— quedan sin régimen: una épica no tiene
-estado propio, así que nunca dispara la exigencia de ancla. Quedó anotado como decisión abierta §9.5,
+estado propio, así que nunca dispara la exigencia de ancla. Quedó anotado como decisión abierta §9.6,
 no inventado sobre la marcha.

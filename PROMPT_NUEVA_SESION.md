@@ -20,11 +20,10 @@ Leé en este orden antes de proponer nada:
 **Regla dura del proyecto:** la especificación define *la forma*, nunca *el contenido*. Si una regla
 no se puede enunciar sin nombrar un proyecto, un cliente o un stack concreto, no va en la spec.
 
-**Próximo paso** (movimiento 4 de la fase 0): llenar `plantilla/`, que hoy está vacía. Es lo que falta
-para el gate de la fase 0 — «un proyecto nuevo arranca desde la plantilla en horas». Necesita al menos
-una constitución base (principios, prioridades, definición de listo), el esqueleto de `backlog/` con
-un ítem de ejemplo, y el plan de hitos. Ojo con la regla dura: el ejemplo se inventa, no se copia del
-banco de pruebas.
+**Próximo paso** (movimiento 5, el gate de la fase 0): **arrancar un proyecto real desde la
+plantilla** y medir cuánto cuesta. El gate es «un proyecto nuevo arranca desde la plantilla en horas»,
+y no se puede declarar cumplido sin haberlo hecho una vez. Lo que salga de ahí es la prueba 002.
+Hasta entonces la fase 0 sigue abierta, aunque sus tres entregables ya estén escritos.
 
 ## ▲ COPIAR HASTA ACÁ ▲
 
@@ -103,8 +102,8 @@ Agregadas en la v0.2, todas salidas de la prueba 001:
 ### Abiertas (ver §9 de la especificación)
 
 Ubicación de los archivos de ítem · criterios compartidos entre ítems · versionado del formato ·
-si las prioridades son parte del formato o de cada proyecto · qué régimen de validez tienen los
-criterios de épica.
+si las prioridades son parte del formato o de cada proyecto · dónde viven la épica y el historial ·
+qué régimen de validez tienen los criterios de épica.
 
 Las dos primeras siguen abiertas **porque la prueba 001 no dio evidencia**, no por falta de discusión.
 La tercera dejó de ser hipotética: ya hay dos versiones del formato, y la segunda acepta cosas que la
@@ -120,6 +119,43 @@ ciclos de diez comandos.
 ---
 
 ## Log de sesiones
+
+### 2026-08-25 (4) — La plantilla
+
+**Qué se hizo.** Movimiento 4. `plantilla/` estaba vacía y ahora tiene los tres documentos que un
+proyecto nuevo necesita antes de escribir su primer ítem, los formularios del formato, un ejemplo
+completo y tres agentes.
+
+```
+plantilla/README.md            instrucciones de arranque, en 6 pasos
+plantilla/docs/CONSTITUCION.md principios · prioridades · DoD · git · herramientas · agentes
+plantilla/docs/PLAN.md         los hitos, definidos por significado
+plantilla/docs/decisiones/     formulario de decisión
+plantilla/backlog/             formularios de épica e ítem + un ejemplo cerrado, con historial
+plantilla/agentes/             especificador · implementador · verificador
+```
+
+**La decisión de diseño.** Los agentes están **separados por lo que no pueden hacer**, y esa es toda
+la gracia: el especificador no implementa (no puede ablandar un criterio para que le salga más
+fácil), el implementador no edita criterios (no puede redefinir el trabajo mientras lo hace), el
+verificador no arregla nada (no tiene motivo para minimizar lo que encuentra). El verificador hace a
+mano el trabajo del validador de la fase 2 — la plantilla es usable hoy, sin herramientas.
+
+**Qué eligió la plantilla que la spec deja abierto.** Ítems en `backlog/` plano · la épica como
+archivo junto a sus ítems · el historial como última sección del ítem · prioridades P0–P3. Están
+declaradas como elección de la plantilla, en una tabla de su README, con cuándo conviene cambiarlas.
+
+**Qué volvió a la spec.** Las dos del medio **no son decisiones de cada proyecto: son huecos del
+formato**. §3.1 dice que un ítem es un archivo, pero §4 no dice si la épica lo es, y §3.4 manda el
+historial «aparte» sin decir aparte dónde. Quedó como decisión abierta §9.5. También se anotó en §9.3
+que la constitución ya declara contra qué versión del formato está escrito («escrito contra FaLuSpec:
+0.2»), que era justo lo que esa decisión pedía.
+
+**Pendiente.** Nada bloqueante.
+
+**Próximo paso.** El gate: arrancar un proyecto real desde la plantilla y medir cuánto cuesta.
+
+**Estado del repo.** `main`, sin remoto.
 
 ### 2026-08-25 (3) — Especificación v0.2
 
