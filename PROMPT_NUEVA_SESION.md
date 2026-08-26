@@ -20,10 +20,11 @@ Leé en este orden antes de proponer nada:
 **Regla dura del proyecto:** la especificación define *la forma*, nunca *el contenido*. Si una regla
 no se puede enunciar sin nombrar un proyecto, un cliente o un stack concreto, no va en la spec.
 
-**Próximo paso** (movimiento 5, el gate de la fase 0): **arrancar un proyecto real desde la
-plantilla** y medir cuánto cuesta. El gate es «un proyecto nuevo arranca desde la plantilla en horas»,
-y no se puede declarar cumplido sin haberlo hecho una vez. Lo que salga de ahí es la prueba 002.
-Hasta entonces la fase 0 sigue abierta, aunque sus tres entregables ya estén escritos.
+**Próximo paso** (movimiento 5, el gate de la fase 0): correr la prueba 002 — arrancar un proyecto
+real desde la plantilla y medir cuánto cuesta. El protocolo está escrito en
+`docs/pruebas/002-arranque-desde-plantilla/PROTOCOLO.md`: leelo antes de nada. **Se corre en una
+sesión limpia, sin este prompt**, porque parte de lo que se prueba es si la plantilla se explica sola.
+Hasta que ese gate no se mida, la fase 0 sigue abierta aunque sus tres entregables ya estén escritos.
 
 ## ▲ COPIAR HASTA ACÁ ▲
 
