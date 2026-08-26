@@ -5,12 +5,13 @@
 ## ▼ COPIAR DESDE ACÁ ▼
 
 Estoy trabajando en **FaLuSpec**, un formato propio para especificar trabajo de software de modo que
-una máquina pueda verificarlo. Está en **fase 0** (definir el formato; todavía no hay herramientas).
+una máquina pueda verificarlo. La **fase 0 está cerrada**: el formato (v0.3) y la plantilla existen y
+se probaron contra dos casos reales. Arranca la **fase 1**; todavía no hay herramientas.
 
 Leé en este orden antes de proponer nada:
 
 1. `README.md` — qué es y el plan de 3 fases con sus gates.
-2. `docs/ESPECIFICACION.md` — el formato, hoy en **v0.2**. Es el entregable central de la fase 0.
+2. `docs/ESPECIFICACION.md` — el formato, hoy en **v0.3**. Es el entregable central de la fase 0.
 3. `docs/decisiones/001-por-que-existe.md` — contra qué se comparó y qué se tomó de cada alternativa.
 4. El **Log de sesiones** al final de este archivo — empezá por la entrada de arriba.
 5. `docs/pruebas/` — los dos casos reales contra los que se probó el formato, con sus hallazgos.
@@ -20,12 +21,13 @@ Leé en este orden antes de proponer nada:
 **Regla dura del proyecto:** la especificación define *la forma*, nunca *el contenido*. Si una regla
 no se puede enunciar sin nombrar un proyecto, un cliente o un stack concreto, no va en la spec.
 
-**Próximo paso** (movimiento 6): aplicar los hallazgos de la prueba 002 —
-`docs/pruebas/002-arranque-desde-plantilla/HALLAZGOS.md`. **El gate de la fase 0 ya está cumplido**
-(un proyecto real arrancó en 1 hora), pero la corrida dejó 11 defectos de plantilla que hacen
-tropezar de entrada a quien la use, y 12 de formato. La propuesta es aplicar los 11 de plantilla y los
-5 de formato con consecuencia sobre el validador (F1, F2, F5, F6, F7) antes de dar la fase por
-cerrada; el resto espera a la fase 1.
+**Próximo paso** (fase 1): un archivo por ítem como fuente, y las tablas y el mapa como **vistas
+generadas**. El gate: el backlog en tabla se regenera y coincide con el escrito a mano. Ojo que esto
+roza la frontera con la fase 2 — generar una vista ya es una herramienta. Decidir primero si la fase 1
+define **el formato de las vistas** (y se generan a mano o con un script mínimo) o si arranca el CLI.
+
+Antes de eso hay una decisión suelta en el proyecto de origen: el trabajo de la prueba 002 quedó en
+`011-SeguimientoDePedidos`, rama `chore/faluspec-arranque`, **sin mergear a `develop`**.
 
 ## ▲ COPIAR HASTA ACÁ ▲
 
@@ -101,11 +103,29 @@ Agregadas en la v0.2, todas salidas de la prueba 001:
   Uno solo — más abajo, el ancla se parece a un número de línea.
 - **`bloqueado_por` es obligatorio en `blocked`.** Sin él, el bloqueo no es consultable por ninguna vista.
 
+Agregadas en la v0.3, todas salidas de la prueba 002 (usar el formato para trabajar, no para escribir):
+
+- **Un ítem `done` declara su impacto** (§3.5): qué movió fuera de sus propios criterios, o «ninguno».
+  El formato verifica lo declarado; sin esta pregunta no hay forma de ver lo que se movió sin declarar.
+- **La verificación tiene que poder fallar** si el criterio se incumple. Un test que pasaría igual con
+  el problema presente es formalmente válido y materialmente vacío.
+- **`estatica` se define por ser un chequeo mecánico sobre el repositorio**, no por correr en CI.
+- **Una épica puede declarar `bloqueado_por`.** No es estado: es la causa común, dicha una vez.
+- **Se puede nacer en cualquier estado salvo `done`**; `fecha_estado` es «desde cuándo está así».
+- **El historial cubre decisiones, no sólo implementación**, y arranca cuando hay algo que registrar.
+- **El ancla puede apuntar a un directorio** cuando el criterio habla de un conjunto de archivos.
+
 ### Abiertas (ver §9 de la especificación)
 
 Ubicación de los archivos de ítem · criterios compartidos entre ítems · versionado del formato ·
 si las prioridades son parte del formato o de cada proyecto · dónde viven la épica y el historial ·
 qué régimen de validez tienen los criterios de épica.
+
+Y los cinco hallazgos de la 002 que se dejaron sin resolver a propósito: contradicción entre un
+criterio nuevo y un ítem ya cerrado (F3) · cómo exigir que una enumeración sea exhaustiva (F4, puede
+no tener respuesta) · distinguir en el diff «completé el ancla» de «cambié el criterio» (F9) · varios
+criterios compartiendo un mismo símbolo (F10) · el trabajo que el propio cambio vuelve necesario
+(F12).
 
 Las dos primeras siguen abiertas **porque la prueba 001 no dio evidencia**, no por falta de discusión.
 La tercera dejó de ser hipotética: ya hay dos versiones del formato, y la segunda acepta cosas que la
@@ -121,6 +141,41 @@ ciclos de diez comandos.
 ---
 
 ## Log de sesiones
+
+### 2026-08-26 (2) — Especificación v0.3 y plantilla arreglada · fase 0 cerrada
+
+**Qué se hizo.** Movimiento 6: se aplicaron los hallazgos de la prueba 002 y **se cerró la fase 0**.
+
+**Formato → v0.3.** Entraron los cinco con consecuencia sobre el validador, más dos que salían gratis:
+
+- **§3.5, el impacto declarado** — un ítem `done` dice qué movió fuera de sus criterios, o «ninguno».
+  Es la respuesta al agujero más grande de la 002: el formato verifica lo declarado y no tiene forma
+  de ver lo que se movió sin declarar. Lo que no se pregunta no se responde.
+- **Regla de validez 6** — la verificación tiene que **poder fallar** si el criterio se incumple. Sale
+  del caso del test que hacía `count(*) > 0` en un criterio que exigía otra cosa: formalmente válido,
+  materialmente vacío.
+- **`estatica` se define por lo que es**, un chequeo mecánico sobre el repositorio, y no por dónde
+  corre.
+- **`bloqueado_por` de épica** (que no es estado, es la causa común dicha una vez).
+- **Se puede nacer en cualquier estado salvo `done`**, y `fecha_estado` es «desde cuándo está así».
+- **El historial arranca cuando hay algo que registrar**, no con la implementación.
+- **Ancla a directorio**, cuarta forma.
+
+**Sin resolver a propósito: F3, F4, F9, F10, F12** — quedan anotados en el HALLAZGOS de la 002. F4 (no
+hay forma de exigir exhaustividad) puede no tener respuesta nunca.
+
+**Plantilla: los once.** Los tres que importan: los agentes se mudaron a `.claude/agents/`, que es
+donde la herramienta los busca; el README ganó sección de instalación con el caso «repo que ya
+existe»; y la constitución **dejó de citar la especificación por número de sección**, porque la spec no
+viaja con la plantilla y quien la use no puede leerla.
+
+**Pendiente.** El trabajo de la prueba 002 sigue en `011-SeguimientoDePedidos`, rama
+`chore/faluspec-arranque`, sin mergear. `E19-01` tapa un agujero de despliegue real, así que
+probablemente convenga conservarlo — pero es decisión de ese proyecto, no de éste.
+
+**Próximo paso.** Fase 1.
+
+**Estado del repo.** `main`, sin remoto.
 
 ### 2026-08-26 — El gate de la fase 0, cumplido
 

@@ -17,6 +17,10 @@ descripción en vez de un identificador, pedí que se especifique primero.
 5. Completá las anclas que faltaban, ahora que el símbolo existe. Apuntan a **símbolos, nunca a
    números de línea**.
 6. Escribí el historial: qué decidiste, qué descartaste y por qué, qué quedó afuera.
+7. Escribí el **impacto**: qué movió este ítem fuera de sus propios criterios — otro ítem ya cerrado,
+   una regla de la constitución, el comportamiento de un ambiente. Si no movió nada, «ninguno».
+   Preguntátelo en serio: un ítem puede tener todos sus criterios en verde y haber cambiado una regla
+   del proyecto que ningún criterio menciona, y entonces no hay verificación que lo toque.
 
 ## Lo que no hacés
 
@@ -30,6 +34,10 @@ de `done` no se vuelve: cerrar de más obliga a abrir un ítem nuevo para arregl
 **No metés trabajo que nadie pidió.** Si encontrás algo que hay que hacer y no está en ningún
 criterio, anotalo como ítem nuevo. No lo hagas de paso: un cambio sin criterio es un cambio que nadie
 va a poder verificar después.
+
+Distinto es el trabajo que **tu propio cambio vuelve necesario**: tests que dejaron de ser válidos,
+llamadas que hay que actualizar. Eso sí entra —sin eso el cambio está incompleto— pero **va al
+historial y al impacto**, no pasa silencioso.
 
 **No tocás ítems ajenos.** Un identificador, un ítem.
 

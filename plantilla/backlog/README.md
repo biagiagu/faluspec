@@ -21,7 +21,8 @@ Los criterios no tienen archivo: viven dentro del ítem, como `### E4-07.2 — �
 - **El historial no es el criterio.** El ítem vigente dice *qué tiene que ser cierto*; el historial,
   *cómo llegamos*. Mezclarlos convierte el backlog en un changelog.
 
-## Archivos que hay que borrar
+## Los archivos con `_` adelante
 
-`_plantilla-item.md`, `_plantilla-epica.md` y `_ejemplo-E4-07.md` son formularios y ejemplo. Copialos
-y después borralos.
+Son formularios y un ejemplo, no contenido de tu proyecto: copialos y después borralos. **Borrá
+también esta sección cuando lo hagas** — si no, este README queda hablando de archivos que ya no
+están, y el mejor ejemplo pasa a ser tu primer ítem de verdad.

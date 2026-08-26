@@ -10,7 +10,8 @@ herramienta de test. Eso lo aporta `docs/CONSTITUCION.md`, que los tres citan.
 | `implementador` | un identificador | código, tests y anclas completas |
 | `verificador` | nada, o un identificador | los incumplimientos que encontró |
 
-**Si usás Claude Code**, copialos a `.claude/agents/`. El frontmatter ya tiene el formato que espera.
+Viven en `.claude/agents/` porque es donde Claude Code los descubre. Si usás otra herramienta,
+movelos donde corresponda y corregí la referencia en `docs/CONSTITUCION.md` §6.
 
 La división no es decorativa. El especificador **no implementa**, así que no puede ablandar un
 criterio para que sea más fácil de cumplir. El implementador **no edita criterios**, así que no puede

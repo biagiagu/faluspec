@@ -35,7 +35,14 @@ era un criterio: era medio criterio.>
 - ancla: `ninguna` — <motivo: vive fuera del repo · el alcance es el repo entero · es el test mismo>
 - verifica: `manual`
 
+## Impacto
+
+<Obligatorio en `done`. Qué movió este ítem fuera de sus propios criterios: otro ítem ya cerrado, una
+regla de la constitución, el comportamiento de un ambiente. Si no movió nada, escribí "Ninguno". La
+pregunta es obligatoria justamente porque la respuesta casi siempre es esa.>
+
 ## Historial
 
-<Vacío hasta que se empiece. Acá van las decisiones, lo descartado y lo que quedó pendiente: nunca
-en el encabezado ni en los criterios.>
+<Arranca cuando hay algo que registrar, no cuando empieza la implementación. Van acá las decisiones
+sobre el ítem —por qué está bloqueado, qué se descartó al escribirlo, por qué un criterio cambió— y
+las de implementación. Nunca en el encabezado ni en los criterios.>

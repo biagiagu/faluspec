@@ -62,6 +62,11 @@ destinataria.
 - ancla: `ninguna` — el valor vive en la configuración del entorno, fuera del repositorio
 - verifica: `manual`
 
+## Impacto
+
+Ninguno. El reintento es interno del envío de notificaciones: no cambia el contrato de ningún otro
+ítem cerrado ni el comportamiento de ningún ambiente.
+
 ## Historial
 
 **2026-03-14 — cerrado.** El techo de 30 minutos salió de que más allá de eso el aviso ya no le sirve

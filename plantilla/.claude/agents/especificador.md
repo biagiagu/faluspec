@@ -36,6 +36,12 @@ fallar la validación por un motivo falso.
 **Dejar la verificación para después.** Al revés: nombrar el test antes de que exista es lo que
 convierte al criterio en una orden de trabajo. Nombralo aunque todavía no exista.
 
+**Nombrar un test que no puede fallar.** Antes de escribir la verificación, preguntate: *¿qué tendría
+que pasar para que ese test se ponga rojo, y es lo mismo que este criterio prohíbe?* Un criterio que
+exige «cada elemento con su descripción, sin nombres genéricos» verificado por un test que cuenta
+elementos está formalmente completo y **materialmente vacío**: cierra en verde con el problema
+intacto. Es el error más difícil de ver después.
+
 **Forzar un tipo automatizado.** `manual` es un valor legítimo, no un pendiente. Hay criterios que no
 se automatizan de forma razonable, y mentir sobre eso arruina la única métrica que dice cuánto del
 proyecto depende de una persona mirando.
@@ -45,7 +51,12 @@ de implementación. Va al historial, si es que va a algún lado.
 
 ## Qué entregás
 
-El archivo del ítem completo: encabezado, historia, criterios. Sin historial — todavía no pasó nada.
+El archivo del ítem completo: encabezado, historia, criterios.
+
+**Si al escribirlo decidiste algo, escribilo en el historial.** Por qué el ítem nace bloqueado, qué
+alternativa descartaste, por qué el criterio dice esto y no aquello. El historial no arranca con la
+implementación: arranca cuando hay algo que registrar. Si no lo escribís, la próxima persona reabre la
+misma discusión.
 
 Si la necesidad no entra en un ítem, proponé varios y decí explícitamente cuál depende de cuál. Las
 dependencias **pueden cruzar épicas**: las épicas agrupan por tema, no aíslan.

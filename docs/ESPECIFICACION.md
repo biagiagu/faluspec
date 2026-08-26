@@ -1,6 +1,6 @@
 # FaLuSpec — especificación del formato
 
-> Versión 0.2 · borrador · 2026-08-25
+> Versión 0.3 · borrador · 2026-08-26
 >
 > Este documento define **la forma**, con independencia de cualquier proyecto. Ninguna regla de acá
 > puede mencionar un dominio, un cliente ni un stack concreto. Si una regla no se puede enunciar sin
@@ -63,9 +63,17 @@ Un criterio es **válido** cuando:
 3. Si el ítem que lo contiene está en estado `done`, **declara** al menos un `ancla` y una `verifica`.
 4. Cada `ancla` resuelve a algo que existe, o es `ninguna` con su motivo (§2.3).
 5. Su `verifica` declara un tipo de los definidos en §2.4.
+6. Su `verifica` **puede fallar si el criterio se incumple**.
 
 Un criterio de un ítem que **no** está `done` puede no tener ancla ni verificación: todavía no está
 implementado, y exigirle ancla obligaría a inventarla.
+
+La regla 6 es la que impide el fraude más silencioso del formato: una verificación que existe, corre
+y pasa, pero que no distingue el caso que el criterio prohíbe. Un criterio que exige «cada depósito
+con su ciudad, sin nombres genéricos» verificado por un test que cuenta filas está **formalmente
+válido y materialmente vacío** — cierra en verde con el problema intacto. No se valida
+automáticamente; se audita preguntando una sola cosa: *¿qué tendría que pasar para que este test se
+ponga rojo, y es lo mismo que este criterio prohíbe?*
 
 **Declarar no es tener.** Hay criterios que no van a tener ancla nunca, y no por falta de trabajo:
 el estado que afirman vive fuera del repositorio, o su alcance es el repositorio entero. Para ésos,
@@ -93,14 +101,15 @@ Se admite **un nivel de profundidad** dentro del símbolo (`#esquema.CLAVE`) cua
 de una parte y no del todo. Uno solo: si para localizar el criterio hace falta bajar más, el ancla
 empieza a parecerse a un número de línea, y el problema probablemente sea el diseño del código.
 
-#### Las otras dos formas
+#### Las otras tres formas
 
 | Forma | Cuándo |
 |---|---|
 | `ruta/al/archivo.ext` | El archivo no tiene símbolos que nombrar: un binario, un archivo de configuración, un conjunto de datos. |
+| `ruta/al/directorio/` | El criterio habla de un conjunto de archivos que se sostiene como conjunto — un directorio de íconos, de migraciones, de fixtures. La barra final es obligatoria. |
 | `ninguna — <motivo>` | El criterio no tiene dónde anclarse, y eso es permanente. |
 
-El ancla a archivo entero vale **sólo** cuando no hay símbolo posible. Si el archivo tiene símbolos,
+El ancla a archivo o a directorio vale **sólo** cuando no hay símbolo posible. Si el archivo tiene símbolos,
 hay que nombrar uno: usarlo como escape convierte el ancla en una ruta y le saca lo único que la hacía
 verificable.
 
@@ -136,7 +145,7 @@ Declara cómo se comprueba el criterio:
 | `unit` | Test unitario, con dependencias externas simuladas. |
 | `integracion` | Test contra dependencias reales (base de datos, servicios levantados). |
 | `e2e` | Recorrido completo por la interfaz o la API pública. |
-| `estatica` | Chequeo sobre el repositorio y no sobre el sistema corriendo. Corre en CI y rompe el build. |
+| `estatica` | Chequeo mecánico sobre el repositorio, no sobre el sistema corriendo. |
 | `manual` | Se comprueba a mano. Valor legítimo, no un pendiente. |
 
 `manual` existe a propósito. Hay criterios que no se automatizan de forma razonable, y forzar un tipo
@@ -145,8 +154,12 @@ qué porcentaje del proyecto depende de verificación humana es un dato de gesti
 
 `estatica` es para los criterios que afirman algo del **repositorio** y no del sistema: que un valor
 heredado no sobreviva en ningún archivo, que ningún secreto viaje versionado, que no quede una marca
-de pendiente. No es un test —no ejecuta el producto— pero tampoco es manual: corre solo y falla el
-build. Sin este tipo, esos criterios sólo se pueden escribir mintiendo sobre cómo se comprueban.
+de pendiente. No es un test —no ejecuta el producto— pero tampoco es manual: **nadie juzga nada, el
+comando devuelve un resultado o no lo devuelve.**
+
+El tipo se define por eso y **no por dónde corre**. Que además esté en CI es una recomendación de la
+constitución del proyecto, no parte del tipo: un chequeo reproducible que hoy se corre a mano sigue
+siendo `estatica`, y llamarlo `manual` mentiría sobre quién decide el resultado.
 
 Cuando el tipo no es `manual`, la verificación **debería** nombrar el test concreto. Eso habilita el
 reporte de cobertura por criterio: qué criterios tienen test y cuáles se quedaron sin.
@@ -214,7 +227,8 @@ pero las vistas pueden usarlos.
 3. Un ítem `done` tiene `fecha_estado`.
 4. Un ítem `done` tiene al menos un criterio, y todos sus criterios son válidos según §2.2.
 5. Un ítem no puede estar `done` si alguno de sus `depende_de` no lo está.
-6. Un ítem `blocked` tiene `bloqueado_por`.
+6. Un ítem `blocked` tiene `bloqueado_por`, propio o heredado de su épica (§4).
+7. Un ítem `done` declara su impacto (§3.5), aunque sea «ninguno».
 
 **Un bloqueo tiene que ser consultable.** El detalle de la causa va al historial, pero si el
 encabezado no dice qué se espera, la pregunta más frecuente de cualquier revisión de estado —qué
@@ -226,11 +240,41 @@ obligaría a inventar épicas artificiales para acomodar el grafo.
 
 ### 3.4 El historial es aparte
 
-Las notas de lo que pasó durante la implementación —qué se decidió, qué se descartó, qué quedó
-pendiente— **no van en el encabezado ni en los criterios**. Van al historial del ítem.
+Las notas de lo que pasó —qué se decidió, qué se descartó, qué quedó pendiente— **no van en el
+encabezado ni en los criterios**. Van al historial del ítem.
 
 El ítem vigente responde *qué tiene que ser cierto*. El historial responde *cómo llegamos*. Mezclarlos
 convierte el backlog en un changelog, y obliga a leer historia para saber el estado actual.
+
+**El historial arranca cuando hay algo que registrar, no cuando empieza la implementación.** Cubre
+dos cosas que se confunden fácil:
+
+- **Decisiones sobre el ítem**: por qué está bloqueado, qué alternativa se descartó al escribirlo, por
+  qué un criterio dice hoy algo distinto de lo que decía ayer. Existen desde el día que el ítem se
+  escribe, y si no se registran, la próxima persona reabre la misma discusión.
+- **Decisiones de implementación**: lo que se resolvió mientras se hacía.
+
+Sin la primera, el diff de un ítem no distingue una **corrección de la especificación** de un **cambio
+de alcance**, que es una diferencia que importa mucho.
+
+### 3.5 El impacto declarado
+
+Un ítem `done` declara **qué movió fuera de sus propios criterios**: otro ítem ya cerrado, una regla
+de la constitución, el comportamiento de un ambiente. Si no movió nada, lo dice.
+
+```markdown
+## Impacto
+
+Ninguno.
+```
+
+Parece burocracia y no lo es. El formato verifica que se cumpla **lo declarado**; no tiene forma de
+detectar lo que se movió **sin declarar**. Un ítem puede tener todos sus criterios en verde, estar
+auditado, y haber cambiado una regla del proyecto que nadie va a ver — porque ningún criterio hablaba
+de eso, y por lo tanto ninguna verificación lo iba a tocar.
+
+Lo que no se pregunta no se responde. Por eso la sección es obligatoria en `done` y su valor más
+frecuente es «ninguno»: el trabajo lo hace la pregunta, no la respuesta.
 
 ---
 
@@ -241,6 +285,11 @@ afirman algo sobre el conjunto, no sobre un ítem suelto.
 
 Una épica **no** tiene estado propio: su avance se deriva del estado de sus ítems. Guardar un estado
 de épica invita a que contradiga a sus partes.
+
+Sí puede declarar un **`bloqueado_por` propio**, cuando todos o casi todos sus ítems esperan lo mismo,
+de la misma persona. No es estado —no se deriva de nada ni contradice a nadie—: es la causa común,
+dicha una vez. Sin esto, el dato más importante de una épica parada —que está parada, y por quién—
+sólo se ve abriendo sus ítems de a uno. Cada ítem conserva el suyo si tiene una espera propia.
 
 ---
 
@@ -304,6 +353,14 @@ Un ítem puede volver de `blocked` a `todo` o a `wip`. **No puede volver de `don
 estaba cerrado se rompió, eso es un ítem nuevo, con su propio identificador. Reabrir borra la
 evidencia de que alguna vez estuvo bien.
 
+**Un ítem puede nacer en cualquier estado menos `done`.** El diagrama dice qué transiciones son
+legales, no por dónde hay que entrar. Un ítem que el día que se escribe ya está esperando a un tercero
+nace `blocked`: ponerlo en `todo` afirmaría que alguien podría empezarlo, que es falso.
+
+**`fecha_estado` es desde cuándo está así**, no cuándo alguien lo pasó a ese estado. Para un ítem
+nacido bloqueado son la misma fecha; para el resto, la primera es la que sirve para saber hace cuánto
+que algo no se mueve.
+
 ---
 
 ## 8. Fuente y vistas
@@ -358,7 +415,13 @@ Cuestiones sobre las que el formato todavía no se comprometió. Se resuelven co
 |---|---|---|
 | 0.1 | 2026-08-25 | Primera definición: los cuatro constructos, la gramática de identificadores, los estados y sus transiciones. |
 | 0.2 | 2026-08-25 | Tipo de verificación `estatica` · ancla a archivo entero y ancla `ninguna` declarada · símbolos no exportados y un nivel de propiedad · `bloqueado_por` · la verificación como encargo. |
+| 0.3 | 2026-08-26 | Impacto declarado en `done` · la verificación tiene que poder fallar · `estatica` definida por lo que es y no por dónde corre · `bloqueado_por` de épica · se puede nacer en cualquier estado salvo `done` · el historial cubre decisiones, no sólo implementación · ancla a directorio. |
 
-Los cambios de la 0.2 no salieron de discutir el formato sino de **escribir un caso real con él** y
-anotar dónde crujía:
-[`docs/pruebas/001-parametrizacion-cliente/HALLAZGOS.md`](pruebas/001-parametrizacion-cliente/HALLAZGOS.md).
+Ninguna de las dos salió de discutir el formato. La 0.2 salió de **escribir un caso real con él**; la
+0.3, de **usarlo para trabajar** — arrancar un proyecto, cerrar un ítem y auditarlo:
+
+- [`pruebas/001-parametrizacion-cliente/HALLAZGOS.md`](pruebas/001-parametrizacion-cliente/HALLAZGOS.md)
+- [`pruebas/002-arranque-desde-plantilla/HALLAZGOS.md`](pruebas/002-arranque-desde-plantilla/HALLAZGOS.md)
+
+Los hallazgos de la 002 que **no** entraron en la 0.3 —F3, F4, F9, F10, F12— están anotados ahí. Se
+resuelven con uso repetido, no discutiéndolos ahora.

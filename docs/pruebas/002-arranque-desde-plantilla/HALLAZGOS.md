@@ -211,3 +211,36 @@ ya sabemos que falla.
 **Propuesta:** aplicar los de plantilla (baratos, todos conocidos) y los de formato que tengan
 consecuencia sobre el validador —**F1, F2, F5, F6, F7**— antes de dar la fase por cerrada. El resto
 puede esperar a la fase 1, donde el uso repetido va a decir cuáles son reales.
+
+---
+
+## Qué se hizo con esto
+
+Aplicado el 2026-08-26, antes de cerrar la fase 0.
+
+**Formato → especificación v0.3.** Entraron los cinco que tienen consecuencia sobre el validador, más
+dos que salían gratis porque tocaban archivos que igual había que editar:
+
+| Hallazgo | Cómo quedó |
+|---|---|
+| F1 · impacto no declarado | §3.5 nueva: un ítem `done` declara qué movió fuera de sus criterios, o dice «ninguno» |
+| F2 · verificación que no verifica | Regla de validez 6 en §2.2: la verificación tiene que **poder fallar** |
+| F5 · `estatica` atada a CI | §2.4: el tipo se define por ser un chequeo mecánico, no por dónde corre |
+| F6 · bloqueo de épica | §4: la épica puede declarar `bloqueado_por`, que no es estado |
+| F7 · nacer bloqueado | §7: se puede nacer en cualquier estado salvo `done`; `fecha_estado` es «desde cuándo está así» |
+| F8 · historial de decisiones | §3.4: el historial arranca cuando hay algo que registrar, no con la implementación |
+| F11 · ancla a directorio | §2.3: cuarta forma de ancla |
+
+**Sin resolver, a propósito: F3, F4, F9, F10, F12.** Los cinco son reales y ninguno tiene una
+respuesta obvia — F4 (no hay forma de exigir exhaustividad) puede no tenerla nunca. Se resuelven con
+uso repetido, que es lo que empieza en la fase 1.
+
+**Plantilla.** Los once, todos. Los tres que importan: los agentes se mudaron a `.claude/agents/`, que
+es donde la herramienta los busca; el README ganó una sección de instalación con el caso «repo que ya
+existe»; y **la constitución dejó de citar la especificación por número de sección** — ahora enuncia
+la regla, porque la especificación no viaja con la plantilla.
+
+Los agentes absorbieron lo aprendido: el especificador avisa contra los tests que no pueden fallar, el
+implementador escribe el impacto y distingue el trabajo que su propio cambio vuelve necesario, y el
+verificador chequea primero las verificaciones vacías y las contradicciones contra lo ya cerrado —
+*«un ancla rota se nota cuando alguien la sigue; una verificación vacía no se nota nunca»*.

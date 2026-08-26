@@ -1,6 +1,7 @@
 ---
 id: E<n>
 titulo: <Tema que agrupa, no una tarea>
+bloqueado_por: <opcional: sólo si todos o casi todos sus ítems esperan lo mismo, de la misma persona>
 ---
 
 ## Qué agrupa
@@ -23,3 +24,7 @@ sí mismo. Si el criterio es de un ítem, va en ese ítem.>
 
 **Una épica no tiene estado propio.** Su avance se deriva del estado de sus ítems. Guardar un estado
 acá invita a que contradiga a sus partes.
+
+`bloqueado_por` sí puede ir acá, y no es estado: es la causa común, dicha una vez en vez de repetida
+en cada ítem. Usalo cuando la épica entera está parada esperando a un tercero — sin eso, el dato más
+importante de esa épica sólo se ve abriendo sus ítems de a uno.

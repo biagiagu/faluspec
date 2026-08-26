@@ -2,7 +2,8 @@
 
 Un formato para especificar trabajo de software de modo que **una máquina pueda verificarlo**.
 
-> **Estado: fase 0 — la spec del formato.** Todavía no hay herramientas. Ver [el plan](#el-plan).
+> **Estado: fase 0 cerrada.** El formato está definido y probado contra dos casos reales; todavía no
+> hay herramientas. Ver [el plan](#el-plan).
 
 ## La idea en un párrafo
 
@@ -42,18 +43,21 @@ resuelve nada.
 ## Qué hay acá
 
 ```
-docs/ESPECIFICACION.md    la definición del formato
+docs/ESPECIFICACION.md    la definición del formato — v0.3
 docs/decisiones/          por qué existe y contra qué se comparó
-docs/pruebas/             casos reales escritos en el formato, para estrellarlo contra algo
+docs/pruebas/             los casos reales contra los que se probó, con sus hallazgos
 plantilla/                el esqueleto que se clona para un proyecto nuevo
 ```
+
+Las dos versiones que el formato lleva encima no salieron de discutirlo: salieron de usarlo. La 0.2,
+de escribir un caso real con él; la 0.3, de arrancar un proyecto, cerrar un ítem y auditarlo.
 
 ## El plan
 
 | Fase | Entregable | Gate para pasar a la siguiente |
 |---|---|---|
-| **0 · gate cumplido** | Spec del formato, plantilla, constitución base | ✅ un proyecto real arrancó desde la plantilla en **1 hora** ([prueba 002](docs/pruebas/002-arranque-desde-plantilla/HALLAZGOS.md)) |
-| **1** | Un archivo por ítem como fuente; tablas y mapa como vistas generadas | El backlog en tabla se regenera y coincide con el escrito a mano |
+| **0 · cerrada** | Spec del formato, plantilla, constitución base | ✅ un proyecto real arrancó desde la plantilla en **1 hora** ([prueba 002](docs/pruebas/002-arranque-desde-plantilla/HALLAZGOS.md)) |
+| **1 · en curso** | Un archivo por ítem como fuente; tablas y mapa como vistas generadas | El backlog en tabla se regenera y coincide con el escrito a mano |
 | **2** | CLI: `validate` · `init` · `map` · `status` · `archive` | El validador corre en CI y atrapa una regresión real |
 
 El orden importa. Un validador contra un formato que todavía no está definido no valida nada, y el

@@ -4,6 +4,10 @@ Los hitos, en orden. Un hito se define por **lo que significa para una persona**
 es consecuencia, no definición. Un hito que sólo enumera entregables no permite decidir si un ítem
 dudoso entra o queda afuera.
 
+**Un hito existe cuando su significado está escrito.** Un `H<n>` con el significado en blanco no es un
+hito abierto: es un recordatorio, y va donde van los recordatorios. No los declares por adelantado
+para reservar el número — los números no se reciclan, así que reservar no sirve de nada.
+
 ---
 
 ## H1 — `<nombre corto y memorable>`
@@ -15,7 +19,9 @@ sirva para decidir: «¿este ítem entra en H1?» tiene que poder responderse le
 
 **Estado:** abierto
 
-`<Marcá el hito como MVP si lo es. Es un atributo del hito, no un constructo aparte.>`
+`<Si este hito es el MVP, decilo acá. Es un atributo opcional del hito, no un constructo aparte, y
+hay proyectos donde no aplica: si el producto ya existe y lo que falta es ponerlo a punto, no hay MVP
+que declarar. No fuerces la categoría.>`
 
 ---
 
