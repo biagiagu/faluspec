@@ -13,18 +13,19 @@ Leé en este orden antes de proponer nada:
 2. `docs/ESPECIFICACION.md` — el formato, hoy en **v0.2**. Es el entregable central de la fase 0.
 3. `docs/decisiones/001-por-que-existe.md` — contra qué se comparó y qué se tomó de cada alternativa.
 4. El **Log de sesiones** al final de este archivo — empezá por la entrada de arriba.
-5. `docs/pruebas/001-parametrizacion-cliente/` — un caso real escrito en el formato, y los hallazgos
-   que salieron de escribirlo. Es el banco de pruebas: **su contenido no se generaliza a la spec ni se
-   copia a la plantilla.**
+5. `docs/pruebas/` — los dos casos reales contra los que se probó el formato, con sus hallazgos.
+   **Empezá por `002-arranque-desde-plantilla/HALLAZGOS.md`**: es el gate de la fase 0, ya corrido.
+   Es el banco de pruebas: **su contenido no se generaliza a la spec ni se copia a la plantilla.**
 
 **Regla dura del proyecto:** la especificación define *la forma*, nunca *el contenido*. Si una regla
 no se puede enunciar sin nombrar un proyecto, un cliente o un stack concreto, no va en la spec.
 
-**Próximo paso** (movimiento 5, el gate de la fase 0): correr la prueba 002 — arrancar un proyecto
-real desde la plantilla y medir cuánto cuesta. El protocolo está escrito en
-`docs/pruebas/002-arranque-desde-plantilla/PROTOCOLO.md`: leelo antes de nada. **Se corre en una
-sesión limpia, sin este prompt**, porque parte de lo que se prueba es si la plantilla se explica sola.
-Hasta que ese gate no se mida, la fase 0 sigue abierta aunque sus tres entregables ya estén escritos.
+**Próximo paso** (movimiento 6): aplicar los hallazgos de la prueba 002 —
+`docs/pruebas/002-arranque-desde-plantilla/HALLAZGOS.md`. **El gate de la fase 0 ya está cumplido**
+(un proyecto real arrancó en 1 hora), pero la corrida dejó 11 defectos de plantilla que hacen
+tropezar de entrada a quien la use, y 12 de formato. La propuesta es aplicar los 11 de plantilla y los
+5 de formato con consecuencia sobre el validador (F1, F2, F5, F6, F7) antes de dar la fase por
+cerrada; el resto espera a la fase 1.
 
 ## ▲ COPIAR HASTA ACÁ ▲
 
@@ -120,6 +121,40 @@ ciclos de diez comandos.
 ---
 
 ## Log de sesiones
+
+### 2026-08-26 — El gate de la fase 0, cumplido
+
+**Qué se hizo.** Se corrió la prueba 002 en `011-SeguimientoDePedidos`: sesión limpia, sin acceso al
+repo de FaLuSpec, sin que nadie explicara el formato. **Una hora.** El resultado se verificó contra los
+archivos, no contra el reporte: constitución completa, hito con significado, épica `E19` con 9 ítems,
+`E19-01` cerrado con su ancla resolviendo y 211 tests en verde, verificador corrido, formularios
+borrados.
+
+**El gate pasó.** Con una salvedad declarada en los hallazgos: 011 ya tenía escrita casi toda la
+información que pide la constitución, así que la hora es un **piso optimista**. Lo que sí quedó
+probado sin asteriscos es que **la plantilla se explica sola**.
+
+**Lo que valió más que el gate.** Tres cosas que ninguna discusión de diseño habría producido:
+
+1. **El verificador encontró cuatro criterios cuya verificación no verificaba lo que el criterio
+   afirma** — apuntaban a un test que sólo hace `count(*) > 0`. Habrían cerrado en verde con el
+   problema intacto. Obligar a nombrar el test antes de tiempo fue lo que lo hizo visible.
+2. **Un ítem cerró correctamente y movió el gate de promoción sin declararlo.** Todos sus criterios en
+   verde, auditado, y aun así cambió una regla del proyecto que nadie va a ver. Es el agujero más
+   grande que encontró la prueba (F1).
+3. Un criterio **evitó una mala decisión de implementación** antes de que se le ocurriera a nadie.
+
+**Qué quedó.** 12 hallazgos de formato y 11 de plantilla, en
+`docs/pruebas/002-arranque-desde-plantilla/HALLAZGOS.md`. La bitácora original —31 entradas escritas
+durante el arranque, no después— está copiada al lado como evidencia.
+
+**Pendiente.** Nada bloqueante. El trabajo quedó en 011, rama `chore/faluspec-arranque`, **sin
+mergear a `develop`**: falta decidir si se conserva. Ojo que `pnpm format:check` de ese repo ya venía
+fallando de antes, y tres de los archivos en rojo eran de esta plantilla.
+
+**Próximo paso.** Movimiento 6: aplicar los hallazgos antes de cerrar la fase 0.
+
+**Estado del repo.** `main`, sin remoto.
 
 ### 2026-08-25 (4) — La plantilla
 

@@ -52,7 +52,7 @@ plantilla/                el esqueleto que se clona para un proyecto nuevo
 
 | Fase | Entregable | Gate para pasar a la siguiente |
 |---|---|---|
-| **0 · en curso** | Spec del formato, plantilla, constitución base | Un proyecto nuevo arranca desde la plantilla en horas |
+| **0 · gate cumplido** | Spec del formato, plantilla, constitución base | ✅ un proyecto real arrancó desde la plantilla en **1 hora** ([prueba 002](docs/pruebas/002-arranque-desde-plantilla/HALLAZGOS.md)) |
 | **1** | Un archivo por ítem como fuente; tablas y mapa como vistas generadas | El backlog en tabla se regenera y coincide con el escrito a mano |
 | **2** | CLI: `validate` · `init` · `map` · `status` · `archive` | El validador corre en CI y atrapa una regresión real |
 
