@@ -1,6 +1,6 @@
 # FaLuSpec — especificación del formato
 
-> Versión 0.4 · borrador · 2026-08-26
+> Versión 0.5 · borrador · 2026-08-26
 >
 > Este documento define **la forma**, con independencia de cualquier proyecto. Ninguna regla de acá
 > puede mencionar un dominio, un cliente ni un stack concreto. Si una regla no se puede enunciar sin
@@ -278,6 +278,27 @@ de eso, y por lo tanto ninguna verificación lo iba a tocar.
 Lo que no se pregunta no se responde. Por eso la sección es obligatoria en `done` y su valor más
 frecuente es «ninguno»: el trabajo lo hace la pregunta, no la respuesta.
 
+### 3.6 El encabezado no es YAML
+
+Se le parece, y conviene decirlo antes de que alguien lo dé por sentado.
+
+El encabezado va entre líneas de `---` y es un subconjunto declarado:
+
+- **`clave: valor`, una línea por campo.** Las claves, en minúscula, con guión bajo.
+- **El valor es todo el texto hasta el fin de la línea, y es texto.** Sin tipos, sin comillas, sin
+  booleanos, sin números. Un valor puede contener `:` sin escaparlo.
+- **Las listas van entre corchetes, en una línea**, separadas por coma: `[E4-03, E4-07]`.
+- **Nada más.** Sin anidamiento, sin valores multilínea, sin comentarios, sin referencias.
+
+Adoptar YAML entero traería dos cosas que no queremos. Su **tipado implícito**: un `titulo: no` se
+convertiría en el booleano falso, y una versión `0.10` en el número `0.1`. Y una **dependencia de
+parser** en cada lenguaje donde alguien quiera leer un backlog. El encabezado así definido se lee con
+cinco líneas de código en cualquier lenguaje, y eso es un rasgo del formato, no un detalle de
+implementación.
+
+Un editor que resalte YAML va a resaltar bien estos encabezados. Que se vea igual no lo vuelve lo
+mismo.
+
 ---
 
 ## 4. La épica
@@ -406,6 +427,8 @@ las vistas no se pueden validar ni regenerar, y dos personas editándolas chocan
 ## 9. Decisiones abiertas
 
 Cuestiones sobre las que el formato todavía no se comprometió. Se resuelven con uso, no discutiendo.
+**Las cerradas se tachan y se quedan acá**, con su número: igual que los identificadores de ítem, no
+se reciclan ni se renumeran, porque su número aparece citado en las pruebas que las cerraron.
 
 1. **Ubicación de los archivos de ítem.** ¿Un directorio plano, o uno por épica? Plano es más simple
    de recorrer; por épica escala mejor a cientos de ítems. *La prueba 001 no dio evidencia: con ocho
@@ -414,15 +437,9 @@ Cuestiones sobre las que el formato todavía no se comprometió. Se resuelven co
 2. **Criterios compartidos entre ítems.** Hoy no existen. Si aparece la necesidad real, habrá que
    decidir entre duplicar o referenciar. *La prueba 001 no la hizo aparecer: sus criterios se repiten
    en espíritu, pero cada uno tiene su propia ancla.*
-3. **Versionado del formato.** Un proyecto debería declarar contra qué versión de FaLuSpec está
-   escrito, para que la validación sepa qué reglas aplicar. *Ya hay cuatro versiones, y la prueba 003
-   generó una vista desde un backlog escrito contra la 0.3 sin tener forma de saberlo. La plantilla se
-   adelantó con un campo en la constitución («escrito contra FaLuSpec: 0.4»); falta decidir si el
-   formato lo exige y dónde.*
-7. **Qué subconjunto de YAML es el encabezado.** Hoy es implícito —`clave: valor` en una línea,
-   listas entre corchetes— porque nadie escribió otra cosa. Un valor multilínea rompería cualquier
-   parser y el ítem seguiría siendo legible para una persona. Hay que decidirlo antes del CLI, porque
-   condiciona el parser.
+3. ~~**Versionado del formato.**~~ **Cerrada en la v0.5** → §10, el archivo `.faluspec`. Hicieron
+   falta tres pruebas para que dejara de ser hipotética; en la última, una vista se generó desde un
+   backlog viejo, salió inútil, y nada avisó.
 4. **Prioridades.** Hoy las define cada proyecto en su constitución. Podrían ser parte del formato,
    a costa de imponer un esquema.
 5. **Dónde viven la épica y el historial.** §3.1 dice que un ítem es un archivo, pero §4 no dice si
@@ -434,10 +451,35 @@ Cuestiones sobre las que el formato todavía no se comprometió. Se resuelven co
    contenedor del criterio es un ítem, y una épica no tiene estado propio (§4) — así que sus criterios
    nunca disparan la exigencia de ancla y verificación. ¿Se les aplica el mismo régimen que a los de
    ítem, uno más laxo, o directamente ninguno?
+7. ~~**Qué subconjunto de YAML es el encabezado.**~~ **Cerrada en la v0.5** → §3.6: no es YAML, es un
+   subconjunto declarado. Se cerró antes de escribir el CLI, que era exactamente el motivo por el que
+   estaba anotada.
 
 ---
 
-## 10. Historial de versiones
+## 10. La versión declarada
+
+Un proyecto declara contra qué versión de FaLuSpec está escrito, en un archivo **`.faluspec`** en su
+raíz, con una sola línea:
+
+```
+0.5
+```
+
+**Por qué un archivo y no la constitución.** La constitución es prosa para personas; esto lo lee una
+herramienta, y hacerle parsear prosa para saber qué reglas aplicar es pedirle que adivine. La
+constitución puede seguir mencionándola para quien lea, pero la fuente es el archivo.
+
+**Por qué no en cada ítem.** Se duplicaría una vez por ítem y se desincronizaría al primer descuido.
+La versión es del proyecto, no del ítem.
+
+**Si el archivo falta, la herramienta falla y dice cómo crearlo.** No supone la última versión ni la
+primera: las dos son adivinar, y adivinar mal produce un resultado que parece correcto. Esta regla
+salió de una vista que se generó «bien» desde un backlog viejo y era inútil, sin que nada avisara.
+
+---
+
+## 11. Historial de versiones
 
 | Versión | Fecha | Qué cambió |
 |---|---|---|
@@ -445,6 +487,7 @@ Cuestiones sobre las que el formato todavía no se comprometió. Se resuelven co
 | 0.2 | 2026-08-25 | Tipo de verificación `estatica` · ancla a archivo entero y ancla `ninguna` declarada · símbolos no exportados y un nivel de propiedad · `bloqueado_por` · la verificación como encargo. |
 | 0.3 | 2026-08-26 | Impacto declarado en `done` · la verificación tiene que poder fallar · `estatica` definida por lo que es y no por dónde corre · `bloqueado_por` de épica · se puede nacer en cualquier estado salvo `done` · el historial cubre decisiones, no sólo implementación · ancla a directorio. |
 | 0.4 | 2026-08-26 | Campo `hito` en el ítem: la relación con el corte de release vive en el ítem, y el hito deja de llevar su lista de contenido. |
+| 0.5 | 2026-08-26 | El encabezado deja de ser «YAML» y pasa a ser un subconjunto declarado (§3.6) · un proyecto declara su versión en `.faluspec` (§10). Las dos cierran decisiones abiertas, y las dos se cerraron antes del CLI porque condicionan el parser. |
 
 Ninguna salió de discutir el formato. La 0.2 salió de **escribir un caso real con él**; la 0.3, de
 **usarlo para trabajar** —arrancar un proyecto, cerrar un ítem y auditarlo—; la 0.4, de **definir las

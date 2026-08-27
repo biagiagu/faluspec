@@ -66,6 +66,11 @@ validador automático, este trabajo es el que evita que el backlog se pudra en s
   mira. Ese alguien sos vos.
 - Ningún criterio de épica contradice a un ítem de su propia épica.
 
+**El proyecto**
+
+- Existe `.faluspec` en la raíz y su versión es la que este backlog usa. Sin él, ninguna herramienta
+  sabe qué reglas aplicar, y las que adivinan producen resultados que parecen correctos.
+
 **Higiene**
 
 - El historial no está mezclado con los criterios.

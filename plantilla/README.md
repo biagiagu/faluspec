@@ -16,6 +16,7 @@
 | `.claude/agents/*.md` | a tu `.claude/agents/` | conviven con los agentes que ya tengas |
 | **este README** | a `docs/ARRANQUE-FALUSPEC.md` | **no** a la raíz: ahí ya está el README de tu proyecto |
 | `.gitattributes` | a la raíz | si ya tenés uno, sumale la línea `*.md text eol=lf` |
+| `.faluspec` | a la raíz | una línea con la versión del formato: no lo borres, las herramientas lo leen |
 
 Hacelo en una rama corta, no en la rama principal. Y si tu repo corre un formateador de markdown en
 CI, pasalo por él antes de commitear: estos archivos vienen formateados a mano y pueden no coincidir
