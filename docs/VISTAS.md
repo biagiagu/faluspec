@@ -1,6 +1,6 @@
 # FaLuSpec — las vistas
 
-> Versión 0.1 · borrador · 2026-08-26 · acompaña a la [especificación](ESPECIFICACION.md) §8.
+> Versión 0.2 · borrador · 2026-08-26 · acompaña a la [especificación](ESPECIFICACION.md) §8.
 >
 > Define **la forma de lo que se genera**. Como la especificación, no puede mencionar un dominio, un
 > cliente ni un stack concreto.
@@ -177,7 +177,10 @@ incidente, no una métrica: significa que el código se movió y la especificaci
 
 **Pregunta que responde:** qué entra en cada corte de release.
 
-Filas: épicas. Columnas: hitos. Celdas: los ítems de esa épica asignados a ese hito.
+Filas: épicas. Columnas: hitos. Celdas: los ítems de esa épica cuyo campo `hito` apunta a ése.
+
+Es además la vista que responde **qué contiene un hito**, pregunta que antes contestaba el propio
+hito con una lista escrita a mano.
 
 ```markdown
 <!-- generado desde backlog/ — no editar a mano -->
@@ -193,7 +196,9 @@ Filas: épicas. Columnas: hitos. Celdas: los ítems de esa épica asignados a es
 La columna `sin hito` no es un defecto: un ítem puede existir sin estar asignado a ningún corte. Que
 se vea es el punto.
 
-> **Esta vista todavía no se puede generar.** Ver §7: es la única que pide un cambio en el formato.
+Columnas ordenadas por número de hito, con `sin hito` siempre al final. Dentro de cada celda, los
+ítems por identificador, unidos por ` · `. Un rango contiguo se puede abreviar `E19-01 … E19-09`
+**sólo** si no falta ninguno en el medio: abreviar salteando un hueco sería inventar.
 
 ---
 
@@ -201,20 +206,18 @@ se vea es el punto.
 
 Definir las vistas destapó un hueco que escribiendo ítems no se veía.
 
-### V1 · La relación entre ítem e hito no es derivable
+### V1 · La relación entre ítem e hito no era derivable · **resuelto en la v0.4**
 
-Un hito declara `Contiene: E2, E4, E10 completas · E6 sin el heatmap` — **prosa**. Se lee bien y no se
-computa: «E6 sin el heatmap» no dice qué ítems son. El story map necesita saber, para cada ítem, a qué
-hito pertenece, y hoy esa relación no existe en ningún campo.
+Un hito declaraba `Contiene: E2, E4, E10 completas · E6 sin el heatmap` — **prosa**. Se lee bien y no
+se computa: «E6 sin el heatmap» no dice qué ítems son. El story map necesitaba saber, para cada ítem,
+a qué hito pertenece, y esa relación no existía en ningún campo.
 
-**Propuesta:** que la relación viva en el ítem, con un campo opcional `hito`, y que el `Contiene:` del
-hito pase a ser **vista generada** en vez de fuente. El hito conserva lo que lo hace un hito —su
-significado, que es prosa y debe serlo— y deja de tener una lista que se desactualiza sola.
+**Resuelto:** la relación vive en el ítem, en el campo `hito` (especificación §3.2), y el hito dejó de
+llevar su lista de contenido (§5.1). El hito conserva lo único que una máquina no puede derivar —su
+significado— y pierde una lista que se desactualizaba sola.
 
-Es coherente con §5 de la especificación, que ya dice que la lista de entregables es consecuencia y no
-definición. Hoy esa frase es una recomendación de redacción; esto la vuelve estructura.
-
-**Hasta que eso se decida, el story map no se genera.** Las otras cuatro vistas sí.
+Fue el primer cambio del formato que **no salió de escribir ni de implementar, sino de intentar
+generar algo**. Vale anotarlo: cada modo de uso encuentra huecos distintos.
 
 ### V2 · La cobertura necesita resolver anclas, y eso ya no es leer archivos
 

@@ -7,6 +7,7 @@ estado: <todo | wip | done | blocked>
 fecha_estado: <aaaa-mm-dd — obligatorio en done y en blocked>
 bloqueado_por: <obligatorio en blocked: qué se espera, y de quién>
 depende_de: [<E<n>-<nn>>]
+hito: <opcional: H<n>, el corte de release al que pertenece. Sin hito también es válido.>
 ---
 
 ## Historia

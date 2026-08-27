@@ -15,9 +15,10 @@ para reservar el número — los números no se reciclan, así que reservar no s
 **Significado:** `<qué cambia para alguien concreto el día que esto está listo. Escribilo de modo que
 sirva para decidir: «¿este ítem entra en H1?» tiene que poder responderse leyendo esta línea.>`
 
-**Contiene:** `<E1, E2 completas · E3 sin <parte>>`
-
 **Estado:** abierto
+
+`<El hito NO lleva su lista de contenido: la relación vive en cada ítem, en su campo `hito`. Para
+saber qué contiene, se mira el story map, que se genera y por eso no puede mentir.>`
 
 `<Si este hito es el MVP, decilo acá. Es un atributo opcional del hito, no un constructo aparte, y
 hay proyectos donde no aplica: si el producto ya existe y lo que falta es ponerlo a punto, no hay MVP
@@ -28,7 +29,5 @@ que declarar. No fuerces la categoría.>`
 ## H2 — `<...>`
 
 **Significado:** `<...>`
-
-**Contiene:** `<...>`
 
 **Estado:** abierto

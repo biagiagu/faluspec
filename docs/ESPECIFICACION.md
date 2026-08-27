@@ -1,6 +1,6 @@
 # FaLuSpec — especificación del formato
 
-> Versión 0.3 · borrador · 2026-08-26
+> Versión 0.4 · borrador · 2026-08-26
 >
 > Este documento define **la forma**, con independencia de cualquier proyecto. Ninguna regla de acá
 > puede mencionar un dominio, un cliente ni un stack concreto. Si una regla no se puede enunciar sin
@@ -216,6 +216,7 @@ para no tener que revisar a mano qué no salió.
 | `fecha_estado` | condicional | Obligatorio cuando el estado es `done` o `blocked`. |
 | `bloqueado_por` | condicional | Obligatorio cuando el estado es `blocked`. Una línea: qué se está esperando, y de quién. |
 | `depende_de` | no | Lista de identificadores de ítems que deben estar `done` antes de empezar éste. |
+| `hito` | no | El corte de release al que pertenece. Debe existir. Un ítem sin `hito` es legítimo: todavía no entró en ningún corte. |
 
 El proyecto puede agregar campos propios — sprint, responsable, estimación. La validación los ignora,
 pero las vistas pueden usarlos.
@@ -229,6 +230,7 @@ pero las vistas pueden usarlos.
 5. Un ítem no puede estar `done` si alguno de sus `depende_de` no lo está.
 6. Un ítem `blocked` tiene `bloqueado_por`, propio o heredado de su épica (§4).
 7. Un ítem `done` declara su impacto (§3.5), aunque sea «ninguno».
+8. Si declara `hito`, ese hito existe.
 
 **Un bloqueo tiene que ser consultable.** El detalle de la causa va al historial, pero si el
 encabezado no dice qué se espera, la pregunta más frecuente de cualquier revisión de estado —qué
@@ -302,7 +304,6 @@ persona, no por una lista de entregables.**
 ## H3 — La planilla queda obsoleta
 
 Significado: quien hoy carga los pedidos a mano deja de abrir la planilla.
-Contiene: E2, E4, E10 completas · E6 sin el heatmap.
 Estado: abierto
 ```
 
@@ -310,6 +311,23 @@ La lista de entregables es consecuencia, no definición. Un hito que sólo enume
 decidir si un ítem dudoso entra o queda afuera; uno que declara un significado, sí.
 
 Un hito puede declararse **MVP**. Es un atributo del hito, no un constructo aparte.
+
+### 5.1 Un hito no lleva su lista de contenido
+
+**La relación entre ítem e hito vive en el ítem**, en su campo `hito`. El hito declara únicamente lo
+que lo hace un hito: su significado y su estado.
+
+Antes esa relación se escribía en el hito, en prosa: «E2, E4 completas · E6 sin el heatmap». Se lee
+bien y **no se computa** —«E6 sin el heatmap» no dice qué ítems son— así que ninguna vista podía
+responder qué entra en cada corte, y la lista se desactualizaba sola cada vez que aparecía un ítem
+nuevo.
+
+El costo es real: abrir el archivo de un hito ya no dice qué contiene. Lo responde el story map
+(`VISTAS.md` §6), que se genera y por lo tanto no puede mentir. Se cambió una lista legible que se
+pudre por una vista exacta que hay que ir a buscar, y para eso existen las vistas.
+
+**El significado sigue siendo prosa, y debe serlo.** Es lo único del hito que una máquina no puede
+derivar, y lo único que sirve para decidir si un ítem dudoso entra.
 
 ---
 
@@ -373,7 +391,8 @@ Los **ítems son la fuente**. Todo lo demás se genera:
 | Resumen por épica | conteo de estados de sus ítems |
 | Bloqueos | los `bloqueado_por` de ítems y épicas, agrupados por causa |
 | Cobertura por criterio | campos `verifica` cruzados con los tests que existen |
-| Story map | épicas × hitos, con los ítems como celdas |
+| Story map | el campo `hito` de cada ítem, cruzado con las épicas |
+| Contenido de un hito | los ítems que lo declaran |
 
 La **forma exacta** de cada una —columnas, orden, qué campo alimenta qué celda— está en
 [`VISTAS.md`](VISTAS.md), junto con las reglas que valen para todas: determinismo, orden declarado, y
@@ -421,9 +440,11 @@ Cuestiones sobre las que el formato todavía no se comprometió. Se resuelven co
 | 0.1 | 2026-08-25 | Primera definición: los cuatro constructos, la gramática de identificadores, los estados y sus transiciones. |
 | 0.2 | 2026-08-25 | Tipo de verificación `estatica` · ancla a archivo entero y ancla `ninguna` declarada · símbolos no exportados y un nivel de propiedad · `bloqueado_por` · la verificación como encargo. |
 | 0.3 | 2026-08-26 | Impacto declarado en `done` · la verificación tiene que poder fallar · `estatica` definida por lo que es y no por dónde corre · `bloqueado_por` de épica · se puede nacer en cualquier estado salvo `done` · el historial cubre decisiones, no sólo implementación · ancla a directorio. |
+| 0.4 | 2026-08-26 | Campo `hito` en el ítem: la relación con el corte de release vive en el ítem, y el hito deja de llevar su lista de contenido. |
 
-Ninguna de las dos salió de discutir el formato. La 0.2 salió de **escribir un caso real con él**; la
-0.3, de **usarlo para trabajar** — arrancar un proyecto, cerrar un ítem y auditarlo:
+Ninguna salió de discutir el formato. La 0.2 salió de **escribir un caso real con él**; la 0.3, de
+**usarlo para trabajar** —arrancar un proyecto, cerrar un ítem y auditarlo—; la 0.4, de **definir las
+vistas** y encontrar que una de ellas era imposible de generar ([`VISTAS.md`](VISTAS.md) §7):
 
 - [`pruebas/001-parametrizacion-cliente/HALLAZGOS.md`](pruebas/001-parametrizacion-cliente/HALLAZGOS.md)
 - [`pruebas/002-arranque-desde-plantilla/HALLAZGOS.md`](pruebas/002-arranque-desde-plantilla/HALLAZGOS.md)

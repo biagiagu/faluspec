@@ -6,6 +6,7 @@ prioridad: P1
 estado: done
 fecha_estado: 2026-03-14
 depende_de: [E4-03]
+hito: H1
 ---
 
 > **Ejemplo.** Es el mismo caso que usa la especificación como átomo, desarrollado hasta un ítem
