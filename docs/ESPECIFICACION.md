@@ -371,8 +371,13 @@ Los **ítems son la fuente**. Todo lo demás se genera:
 |---|---|
 | Tabla de backlog | encabezados de todos los ítems |
 | Resumen por épica | conteo de estados de sus ítems |
-| Story map | épicas × hitos, con los ítems como celdas |
+| Bloqueos | los `bloqueado_por` de ítems y épicas, agrupados por causa |
 | Cobertura por criterio | campos `verifica` cruzados con los tests que existen |
+| Story map | épicas × hitos, con los ítems como celdas |
+
+La **forma exacta** de cada una —columnas, orden, qué campo alimenta qué celda— está en
+[`VISTAS.md`](VISTAS.md), junto con las reglas que valen para todas: determinismo, orden declarado, y
+que una vista pueda omitir pero nunca inventar.
 
 Escribir una vista a mano y tratarla como fuente es el error que este formato existe para evitar:
 las vistas no se pueden validar ni regenerar, y dos personas editándolas chocan en cada merge.
