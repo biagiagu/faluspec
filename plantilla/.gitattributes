@@ -1,0 +1,3 @@
+# Las vistas de FaLuSpec se generan con saltos LF. Sin esto, regenerar una vista
+# produce un diff falso en Windows y el gate "se regenera y coincide" no se cumple.
+*.md text eol=lf

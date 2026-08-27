@@ -8,7 +8,7 @@
 > Este documento **no cita la especificación por número de sección**, porque no está en tu repo:
 > cuando una regla del formato hace falta acá, va enunciada.
 
-- **Escrito contra FaLuSpec:** `0.2`
+- **Escrito contra FaLuSpec:** `0.4`
 - **Última revisión:** `<fecha>`
 
 ---

@@ -1,6 +1,6 @@
 # FaLuSpec — las vistas
 
-> Versión 0.2 · borrador · 2026-08-26 · acompaña a la [especificación](ESPECIFICACION.md) §8.
+> Versión 0.3 · borrador · 2026-08-26 · acompaña a la [especificación](ESPECIFICACION.md) §8.
 >
 > Define **la forma de lo que se genera**. Como la especificación, no puede mencionar un dominio, un
 > cliente ni un stack concreto.
@@ -28,6 +28,11 @@ que la próxima regeneración va a borrar.
 5. **No se edita.** Editar una vista es trabajo que se pierde. Si falta un dato, falta en el ítem.
 6. **Valor ausente es `—`.** Un campo opcional vacío se escribe con raya, no con celda en blanco: la
    celda en blanco no distingue «no tiene» de «se me olvidó».
+7. **Codificación y fin de línea declarados: UTF-8 sin BOM, saltos `LF`.** No se heredan del entorno.
+   Una vista generada en dos máquinas distintas tiene que dar el mismo archivo, y sin esto no lo da:
+   la consola de Windows escribe cp1252 si nadie le dice otra cosa, y `git` con `core.autocrlf`
+   convierte los saltos al clonar. El repositorio que use FaLuSpec necesita además un `.gitattributes`
+   que fije `*.md text eol=lf`, o la regla 1 se rompe sin que nadie toque el backlog.
 
 ### 1.2 El encabezado
 
@@ -45,7 +50,8 @@ Sin fecha. La fecha la da el control de versiones, que además no miente.
 
 **Pregunta que responde:** qué hay que hacer, en qué estado está, y qué lo traba.
 
-Agrupada por épica. Épicas por número; ítems por identificador.
+Agrupada por épica. **El orden es numérico, no alfabético**: `E4-07` va antes que `E19-01`, y
+`E19-2` antes que `E19-10`. Ordenar como texto los pone al revés, y es el error que sale solo.
 
 ```markdown
 <!-- generado desde backlog/ — no editar a mano -->
@@ -97,7 +103,7 @@ error que este formato existe para evitar.
 Conteo de `estado` de los ítems de cada épica. `Cerrado` es una **fracción**, nunca un porcentaje:
 `1/9` y `11%` dicen lo mismo hasta que el redondeo empieza a mentir.
 
-Ordenada por número de épica. La fila de total va al final.
+Ordenada por número de épica —numérico, no alfabético—. La fila de total va al final.
 
 ---
 

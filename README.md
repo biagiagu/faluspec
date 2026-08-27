@@ -43,21 +43,24 @@ resuelve nada.
 ## Qué hay acá
 
 ```
-docs/ESPECIFICACION.md    la definición del formato — v0.3
+docs/ESPECIFICACION.md    la definición del formato — v0.4
+docs/VISTAS.md            la forma de lo que se genera a partir de los ítems
 docs/decisiones/          por qué existe y contra qué se comparó
 docs/pruebas/             los casos reales contra los que se probó, con sus hallazgos
 plantilla/                el esqueleto que se clona para un proyecto nuevo
 ```
 
-Las dos versiones que el formato lleva encima no salieron de discutirlo: salieron de usarlo. La 0.2,
-de escribir un caso real con él; la 0.3, de arrancar un proyecto, cerrar un ítem y auditarlo.
+Ninguna de las tres versiones que el formato lleva encima salió de discutirlo: salieron de usarlo. La
+0.2, de escribir un caso real con él; la 0.3, de arrancar un proyecto, cerrar un ítem y auditarlo; la
+0.4, de intentar generar una vista y encontrar que era imposible. Cada modo de uso encontró huecos
+distintos.
 
 ## El plan
 
 | Fase | Entregable | Gate para pasar a la siguiente |
 |---|---|---|
 | **0 · cerrada** | Spec del formato, plantilla, constitución base | ✅ un proyecto real arrancó desde la plantilla en **1 hora** ([prueba 002](docs/pruebas/002-arranque-desde-plantilla/HALLAZGOS.md)) |
-| **1 · en curso** | Un archivo por ítem como fuente; tablas y mapa como vistas generadas | El backlog en tabla se regenera y coincide con el escrito a mano |
+| **1 · en curso** | Un archivo por ítem como fuente; tablas y mapa como vistas generadas | ✅ la tabla generada coincide **byte a byte** con la escrita a mano ([prueba 003](docs/pruebas/003-vistas-generadas/HALLAZGOS.md)) |
 | **2** | CLI: `validate` · `init` · `map` · `status` · `archive` | El validador corre en CI y atrapa una regresión real |
 
 El orden importa. Un validador contra un formato que todavía no está definido no valida nada, y el

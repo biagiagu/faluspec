@@ -415,10 +415,14 @@ Cuestiones sobre las que el formato todavía no se comprometió. Se resuelven co
    decidir entre duplicar o referenciar. *La prueba 001 no la hizo aparecer: sus criterios se repiten
    en espíritu, pero cada uno tiene su propia ancla.*
 3. **Versionado del formato.** Un proyecto debería declarar contra qué versión de FaLuSpec está
-   escrito, para que la validación sepa qué reglas aplicar. *Con la 0.2 ya hay dos versiones y la
-   segunda agrega valores que la primera rechazaría: la decisión dejó de ser hipotética. La plantilla
-   se adelantó con un campo en la constitución («escrito contra FaLuSpec: 0.2»); falta decidir si el
+   escrito, para que la validación sepa qué reglas aplicar. *Ya hay cuatro versiones, y la prueba 003
+   generó una vista desde un backlog escrito contra la 0.3 sin tener forma de saberlo. La plantilla se
+   adelantó con un campo en la constitución («escrito contra FaLuSpec: 0.4»); falta decidir si el
    formato lo exige y dónde.*
+7. **Qué subconjunto de YAML es el encabezado.** Hoy es implícito —`clave: valor` en una línea,
+   listas entre corchetes— porque nadie escribió otra cosa. Un valor multilínea rompería cualquier
+   parser y el ítem seguiría siendo legible para una persona. Hay que decidirlo antes del CLI, porque
+   condiciona el parser.
 4. **Prioridades.** Hoy las define cada proyecto en su constitución. Podrían ser parte del formato,
    a costa de imponer un esquema.
 5. **Dónde viven la épica y el historial.** §3.1 dice que un ítem es un archivo, pero §4 no dice si

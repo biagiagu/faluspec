@@ -15,10 +15,14 @@
 | `docs/CONSTITUCION.md`, `docs/PLAN.md`, `docs/decisiones/` | a tu `docs/` | no pises lo que ya tengas |
 | `.claude/agents/*.md` | a tu `.claude/agents/` | conviven con los agentes que ya tengas |
 | **este README** | a `docs/ARRANQUE-FALUSPEC.md` | **no** a la raíz: ahí ya está el README de tu proyecto |
+| `.gitattributes` | a la raíz | si ya tenés uno, sumale la línea `*.md text eol=lf` |
 
 Hacelo en una rama corta, no en la rama principal. Y si tu repo corre un formateador de markdown en
 CI, pasalo por él antes de commitear: estos archivos vienen formateados a mano y pueden no coincidir
 con tu configuración.
+
+El `.gitattributes` no es opcional si trabajás en Windows: sin él, `git` convierte los saltos de línea
+al clonar, y cualquier vista regenerada aparece como modificada aunque el backlog no haya cambiado.
 
 ## Arranque
 
