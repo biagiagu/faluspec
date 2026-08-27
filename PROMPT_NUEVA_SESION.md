@@ -5,13 +5,15 @@
 ## ▼ COPIAR DESDE ACÁ ▼
 
 Estoy trabajando en **FaLuSpec**, un formato propio para especificar trabajo de software de modo que
-una máquina pueda verificarlo. La **fase 0 está cerrada**: el formato (v0.3) y la plantilla existen y
-se probaron contra dos casos reales. Arranca la **fase 1**; todavía no hay herramientas.
+una máquina pueda verificarlo. La **fase 0 está cerrada** y la **fase 1 tiene su gate cumplido**: el
+formato va por la **v0.4**, las vistas están definidas, y una de ellas ya se genera y coincide byte a
+byte con la escrita a mano. Todavía no hay CLI.
 
 Leé en este orden antes de proponer nada:
 
 1. `README.md` — qué es y el plan de 3 fases con sus gates.
-2. `docs/ESPECIFICACION.md` — el formato, hoy en **v0.3**. Es el entregable central de la fase 0.
+2. `docs/ESPECIFICACION.md` — el formato, hoy en **v0.4**. Es el entregable central de la fase 0.
+   `docs/VISTAS.md` — la forma de lo que se genera. Es el entregable central de la fase 1.
 3. `docs/decisiones/001-por-que-existe.md` — contra qué se comparó y qué se tomó de cada alternativa.
 4. El **Log de sesiones** al final de este archivo — empezá por la entrada de arriba.
 5. `docs/pruebas/` — los dos casos reales contra los que se probó el formato, con sus hallazgos.
@@ -21,12 +23,16 @@ Leé en este orden antes de proponer nada:
 **Regla dura del proyecto:** la especificación define *la forma*, nunca *el contenido*. Si una regla
 no se puede enunciar sin nombrar un proyecto, un cliente o un stack concreto, no va en la spec.
 
-**Próximo paso** (fase 1): un archivo por ítem como fuente, y las tablas y el mapa como **vistas
-generadas**. El gate: el backlog en tabla se regenera y coincide con el escrito a mano. Ojo que esto
-roza la frontera con la fase 2 — generar una vista ya es una herramienta. Decidir primero si la fase 1
-define **el formato de las vistas** (y se generan a mano o con un script mínimo) o si arranca el CLI.
+**Próximo paso — hay que decidir el alcance.** El gate de la fase 1 está cumplido, pero su entregable
+no: de las cinco vistas se generó **una**. Las opciones son (a) generar las otras tres derivables
+—bloqueos, resumen por épica, story map— con scripts desechables y recién ahí cerrar la fase 1, o
+(b) darla por cerrada y arrancar la fase 2, donde el CLI las genera todas de una. Ojo con el sesgo:
+`generar-tabla.py` funciona, y eso hace parecer trivial lo que falta.
 
-Antes de eso hay una decisión suelta en el proyecto de origen: el trabajo de la prueba 002 quedó en
+Antes del CLI hay que cerrar dos decisiones que condicionan el parser: **qué subconjunto de YAML es el
+encabezado** (§9.7) y **cómo declara un proyecto su versión de formato** (§9.3).
+
+Y queda una decisión suelta en el proyecto de origen: el trabajo de la prueba 002 sigue en
 `011-SeguimientoDePedidos`, rama `chore/faluspec-arranque`, **sin mergear a `develop`**.
 
 ## ▲ COPIAR HASTA ACÁ ▲
@@ -141,6 +147,35 @@ ciclos de diez comandos.
 ---
 
 ## Log de sesiones
+
+### 2026-08-26 (3) — Las vistas, la v0.4 y el gate de la fase 1
+
+**Qué se hizo.** Arrancó la fase 1. Se escribió `docs/VISTAS.md` —las cinco vistas con sus columnas,
+su orden y qué campo alimenta cada celda— y se corrió la prueba 003, que es el gate.
+
+**El gate pasa.** La tabla de `E19` generada desde los nueve ítems coincide **byte a byte** con la
+escrita a mano. La tabla a mano se commiteó **antes** que el generador, para poder afirmarlo.
+
+**Lo que cambió el formato (v0.4).** Definir las vistas destapó que la relación entre ítem e hito **no
+era derivable**: el hito declaraba su contenido en prosa («E6 sin el heatmap» no dice qué ítems son).
+Ahora la relación vive en el ítem, en el campo `hito`, y el hito dejó de llevar su lista de contenido
+—conserva su significado, que es lo único que una máquina no puede derivar—. Primer cambio del formato
+que no salió de escribir ni de implementar, sino de **intentar generar algo**.
+
+**Lo que costó llegar al byte a byte.** La primera corrida falló con el contenido correcto: la consola
+de Windows lo codificó en cp1252. Y con `core.autocrlf=true` y sin `.gitattributes`, regenerar una
+vista da diff falso siempre. **El gate habría fallado por motivos que no tienen nada que ver con el
+backlog.** `VISTAS.md` ganó la regla 7 (UTF-8 sin BOM, LF) y la plantilla trae `.gitattributes`.
+
+Otro hallazgo que sólo aparece escribiendo el generador: **«ordenado por identificador» es ambiguo y
+la respuesta obvia es la incorrecta** — como texto, `E19-01` va antes que `E4-07`.
+
+**Lo que el gate NO probó**, y está escrito en los hallazgos para que no se sobrevenda: una sola
+épica, sin huecos de numeración, una sola de las cinco vistas, nueve ítems.
+
+**Pendiente.** Decidir el alcance del cierre de la fase 1 (ver «Próximo paso»).
+
+**Estado del repo.** `main`, sin remoto.
 
 ### 2026-08-26 (2) — Especificación v0.3 y plantilla arreglada · fase 0 cerrada
 

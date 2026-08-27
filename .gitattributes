@@ -1,0 +1,4 @@
+# Las vistas se generan con saltos LF: sin esto, regenerar una vista produce un
+# diff falso en Windows. Es el hallazgo H1 de la prueba 003.
+*.md text eol=lf
+*.py text eol=lf
