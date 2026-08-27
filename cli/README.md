@@ -16,17 +16,31 @@ Códigos de salida: `0` sin errores · `1` con errores · `2` no se pudo ni empe
 
 ## Qué comprueba hoy
 
-Todo lo que se puede leer del backlog sin abrir el código del proyecto: la gramática de los
-identificadores y su unicidad, los campos obligatorios, las dependencias —que existan y que no formen
-ciclos—, los estados y sus exigencias (`fecha_estado`, `bloqueado_por`, el impacto declarado en
-`done`), el subconjunto del encabezado (§3.6), y las reglas de los criterios de un ítem cerrado.
+**Del backlog:** la gramática de los identificadores y su unicidad, los campos obligatorios, las
+dependencias —que existan y que no formen ciclos—, los estados y sus exigencias (`fecha_estado`,
+`bloqueado_por`, el impacto declarado en `done`), el subconjunto del encabezado (§3.6), y las reglas de
+los criterios de un ítem cerrado.
+
+**Del código: que cada ancla resuelva** (§2.2 regla 4). Es lo que ninguna otra herramienta del nicho
+puede hacer, porque ninguna otra guarda dónde vive cada criterio. Un ancla que dejó de resolver
+significa que el código se movió y la especificación quedó mintiendo.
+
+| Forma del ancla | Cómo se comprueba |
+|---|---|
+| `archivo.ts#simbolo` | Se parsea el archivo y se buscan sus declaraciones. **Los símbolos no exportados cuentan.** |
+| `archivo.ts#simbolo.propiedad` | Un nivel de punto: claves de un objeto literal, miembros de una clase |
+| `archivo.ext` | Vale sólo si el archivo no tiene símbolos que nombrar |
+| `directorio/` | Con la barra final. Sin ella se busca un archivo, y no lo encuentra |
+| `ninguna — motivo` | Con motivo. Sin él no se distingue de un olvido |
+| Otros lenguajes | Coincidencia textual, **declarada como aproximada** en la salida |
+
+La resolución no necesita que el proyecto compile: parsea cada archivo suelto. Un ancla tiene que
+poder comprobarse aunque el código esté roto — de hecho es cuando más importa.
 
 ## Qué le falta
 
-- **Resolver anclas**: comprobar que `archivo.ts#simbolo` exista de verdad. Es la parte cara y la que
-  ata este CLI a TypeScript (decisión 002). Sin esto, la validación no cubre la razón de ser del
-  formato.
 - La comprobación de que un `hito` declarado exista, que necesita leer el plan además del backlog.
+- Que la verificación nombrada exista como test.
 - `init`, `map`, `status`, `archive`.
 
 ## Cómo está organizado

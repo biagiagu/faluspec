@@ -10,6 +10,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { leerBacklog } from "./formato/backlog.js";
 import { validarEstructura, comparar, type Hallazgo } from "./reglas/estructura.js";
+import { validarAnclas } from "./reglas/anclas.js";
 
 const VERSIONES_CONOCIDAS = new Set(["0.5"]);
 
@@ -46,7 +47,8 @@ function validate(raiz: string): number {
   }
 
   const backlog = leerBacklog(directorio);
-  const hallazgos = validarEstructura(backlog).sort(
+  const anclas = validarAnclas(backlog, raiz);
+  const hallazgos = [...validarEstructura(backlog), ...anclas.hallazgos].sort(
     (a, b) =>
       Number(a.gravedad === "aviso") - Number(b.gravedad === "aviso") ||
       comparar(a.donde, b.donde) ||
@@ -58,7 +60,13 @@ function validate(raiz: string): number {
 
   for (const h of hallazgos) process.stdout.write(formatear(h) + "\n");
 
-  const cuantos = `${backlog.items.size} ítems · ${backlog.epicas.size} épicas`;
+  const { resueltas, aproximadas, ninguna, rotas } = anclas.resumen;
+  const cuantas =
+    `anclas: ${resueltas} resueltas` +
+    (aproximadas ? ` · ${aproximadas} aproximadas` : "") +
+    (ninguna ? ` · ${ninguna} declaradas ninguna` : "") +
+    (rotas ? ` · ${rotas} ROTAS` : "");
+  const cuantos = `${backlog.items.size} ítems · ${backlog.epicas.size} épicas · ${cuantas}`;
   if (hallazgos.length === 0) {
     process.stdout.write(`backlog válido — ${cuantos}\n`);
   } else {
