@@ -12,7 +12,7 @@ import { leerBacklog } from "./formato/backlog.js";
 import { validarEstructura, comparar, type Hallazgo } from "./reglas/estructura.js";
 import { validarAnclas } from "./reglas/anclas.js";
 
-const VERSIONES_CONOCIDAS = new Set(["0.5"]);
+const VERSIONES_CONOCIDAS = new Set(["0.6"]);
 
 function main(argv: string[]): number {
   const [comando = "", ...resto] = argv;
@@ -29,7 +29,7 @@ function validate(raiz: string): number {
     process.stderr.write(
       `no encuentro \`.faluspec\` en ${raiz}\n` +
         "  Un proyecto declara contra qué versión del formato está escrito (§10).\n" +
-        "  Crealo con una línea: 0.5\n",
+        "  Crealo con una línea: 0.6\n",
     );
     return 2;
   }
@@ -64,7 +64,7 @@ function validate(raiz: string): number {
   const cuantas =
     `anclas: ${resueltas} resueltas` +
     (aproximadas ? ` · ${aproximadas} aproximadas` : "") +
-    (ninguna ? ` · ${ninguna} declaradas ninguna` : "") +
+    (ninguna ? ` · ${ninguna} declaradas none` : "") +
     (rotas ? ` · ${rotas} ROTAS` : "");
   const cuantos = `${backlog.items.size} ítems · ${backlog.epicas.size} épicas · ${cuantas}`;
   if (hallazgos.length === 0) {

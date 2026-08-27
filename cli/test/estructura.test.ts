@@ -19,11 +19,11 @@ function escribir(nombre: string, contenido: string): void {
 }
 
 function epica(id: string, extra = ""): void {
-  escribir(`${id}.md`, `---\nid: ${id}\ntitulo: Una épica\n${extra}---\n\n## Qué agrupa\n\nAlgo.\n`);
+  escribir(`${id}.md`, `---\nid: ${id}\ntitle: Una épica\n${extra}---\n\n## Qué agrupa\n\nAlgo.\n`);
 }
 
 interface Opciones {
-  estado?: string;
+  status?: string;
   fecha?: string;
   depende?: string;
   bloqueado?: string;
@@ -36,18 +36,18 @@ function item(id: string, o: Opciones = {}): void {
   const cab = [
     "---",
     `id: ${id}`,
-    `epica: ${epicaId}`,
-    "titulo: Un ítem",
-    "prioridad: P1",
-    `estado: ${o.estado ?? "todo"}`,
+    `epic: ${epicaId}`,
+    "title: Un ítem",
+    "priority: P1",
+    `status: ${o.status ?? "todo"}`,
   ];
-  if (o.fecha) cab.push(`fecha_estado: ${o.fecha}`);
-  if (o.bloqueado) cab.push(`bloqueado_por: ${o.bloqueado}`);
-  if (o.depende) cab.push(`depende_de: ${o.depende}`);
+  if (o.fecha) cab.push(`status_since: ${o.fecha}`);
+  if (o.bloqueado) cab.push(`blocked_by: ${o.bloqueado}`);
+  if (o.depende) cab.push(`depends_on: ${o.depende}`);
   cab.push("---");
   const criterios = o.criterios ?? "";
-  const impacto = o.impacto ? "\n## Impacto\n\nNinguno.\n" : "";
-  escribir(`${id}.md`, `${cab.join("\n")}\n\n## Historia\n\nComo alguien...\n\n## Criterios\n${criterios}${impacto}`);
+  const impacto = o.impacto ? "\n## Impact\n\nNinguno.\n" : "";
+  escribir(`${id}.md`, `${cab.join("\n")}\n\n## Story\n\nComo alguien...\n\n## Criteria\n${criterios}${impacto}`);
 }
 
 const CRITERIO_COMPLETO = `
@@ -55,8 +55,8 @@ const CRITERIO_COMPLETO = `
 
 **Dado** una condición, **cuando** pasa algo, **entonces** se observa el resultado.
 
-- ancla: \`src/cosa.ts#hacerAlgo\`
-- verifica: \`unit\` → \`cosa.test.ts::hace algo\`
+- anchor: \`src/cosa.ts#hacerAlgo\`
+- verify: \`unit\` → \`cosa.test.ts::hace algo\`
 `;
 
 function hallazgos(): ReturnType<typeof validarEstructura> {
@@ -67,7 +67,7 @@ describe("un backlog bien formado no produce hallazgos", () => {
   it("con un ítem abierto y otro cerrado", () => {
     epica("E1");
     item("E1-01", {
-      estado: "done",
+      status: "done",
       fecha: "2026-01-02",
       criterios: CRITERIO_COMPLETO,
       impacto: true,
@@ -80,21 +80,21 @@ describe("un backlog bien formado no produce hallazgos", () => {
 describe("reglas del ítem", () => {
   it("un ítem `done` sin impacto declarado es un error", () => {
     epica("E1");
-    item("E1-01", { estado: "done", fecha: "2026-01-02", criterios: CRITERIO_COMPLETO });
+    item("E1-01", { status: "done", fecha: "2026-01-02", criterios: CRITERIO_COMPLETO });
     expect(hallazgos().map((h) => h.regla)).toContain("§3.5 impacto");
   });
 
-  it("un ítem `done` sin fecha_estado es un error", () => {
+  it("un ítem `done` sin status_since es un error", () => {
     epica("E1");
-    item("E1-01", { estado: "done", criterios: CRITERIO_COMPLETO, impacto: true });
-    expect(hallazgos().some((h) => h.mensaje.includes("fecha_estado"))).toBe(true);
+    item("E1-01", { status: "done", criterios: CRITERIO_COMPLETO, impacto: true });
+    expect(hallazgos().some((h) => h.mensaje.includes("status_since"))).toBe(true);
   });
 
   it("un ítem `done` no puede depender de uno que no lo está", () => {
     epica("E1");
-    item("E1-01", { estado: "todo" });
+    item("E1-01", { status: "todo" });
     item("E1-02", {
-      estado: "done",
+      status: "done",
       fecha: "2026-01-02",
       depende: "[E1-01]",
       criterios: CRITERIO_COMPLETO.replace("E1-01.1", "E1-02.1"),
@@ -118,21 +118,21 @@ describe("reglas del ítem", () => {
     expect(ciclos[0]?.mensaje).toContain("→");
   });
 
-  it("un ítem `blocked` sin bloqueado_por es un error", () => {
+  it("un ítem `blocked` sin blocked_by es un error", () => {
     epica("E1");
-    item("E1-01", { estado: "blocked", fecha: "2026-01-02" });
+    item("E1-01", { status: "blocked", fecha: "2026-01-02" });
     expect(hallazgos().some((h) => h.regla === "§3.3 regla 6")).toBe(true);
   });
 
-  it("un ítem `blocked` hereda el bloqueado_por de su épica", () => {
-    epica("E1", "bloqueado_por: falta que la contraparte responda\n");
-    item("E1-01", { estado: "blocked", fecha: "2026-01-02" });
+  it("un ítem `blocked` hereda el blocked_by de su épica", () => {
+    epica("E1", "blocked_by: falta que la contraparte responda\n");
+    item("E1-01", { status: "blocked", fecha: "2026-01-02" });
     expect(hallazgos()).toEqual([]);
   });
 
-  it("avisa cuando bloqueado_por es demasiado largo para una celda", () => {
+  it("avisa cuando blocked_by es demasiado largo para una celda", () => {
     epica("E1");
-    item("E1-01", { estado: "blocked", fecha: "2026-01-02", bloqueado: "x".repeat(200) });
+    item("E1-01", { status: "blocked", fecha: "2026-01-02", bloqueado: "x".repeat(200) });
     const aviso = hallazgos().find((h) => h.gravedad === "aviso");
     expect(aviso?.mensaje).toContain("línea corta");
   });
@@ -141,7 +141,7 @@ describe("reglas del ítem", () => {
     epica("E1");
     escribir(
       "E2-01.md",
-      "---\nid: E2-01\nepica: E1\ntitulo: x\nprioridad: P1\nestado: todo\n---\n\n## Criterios\n",
+      "---\nid: E2-01\nepic: E1\ntitle: x\npriority: P1\nstatus: todo\n---\n\n## Criteria\n",
     );
     expect(hallazgos().some((h) => h.mensaje.includes("no coincide"))).toBe(true);
   });
@@ -151,7 +151,7 @@ describe("reglas del criterio", () => {
   it("un criterio de un ítem `done` necesita ancla y verificación", () => {
     epica("E1");
     item("E1-01", {
-      estado: "done",
+      status: "done",
       fecha: "2026-01-02",
       impacto: true,
       criterios: "\n### E1-01.1 — Sin nada\n\n**Dado** algo, **entonces** otra cosa.\n",
@@ -166,19 +166,19 @@ describe("reglas del criterio", () => {
     expect(hallazgos()).toEqual([]);
   });
 
-  it("`ancla: ninguna` sin motivo es un error", () => {
+  it("`anchor: none` sin motivo es un error", () => {
     epica("E1");
     item("E1-01", {
-      criterios: "\n### E1-01.1 — Algo\n\n**Dado** x, **entonces** y.\n\n- ancla: `ninguna`\n- verifica: `manual`\n",
+      criterios: "\n### E1-01.1 — Algo\n\n**Dado** x, **entonces** y.\n\n- anchor: `none`\n- verify: `manual`\n",
     });
     expect(hallazgos().some((h) => h.regla === "§2.3 ancla")).toBe(true);
   });
 
-  it("`ancla: ninguna` con motivo es válida", () => {
+  it("`anchor: none` con motivo es válida", () => {
     epica("E1");
     item("E1-01", {
       criterios:
-        "\n### E1-01.1 — Algo\n\n**Dado** x, **entonces** y.\n\n- ancla: `ninguna` — vive fuera del repositorio\n- verifica: `manual`\n",
+        "\n### E1-01.1 — Algo\n\n**Dado** x, **entonces** y.\n\n- anchor: `none` — vive fuera del repositorio\n- verify: `manual`\n",
     });
     expect(hallazgos()).toEqual([]);
   });
@@ -186,7 +186,7 @@ describe("reglas del criterio", () => {
   it("un tipo de verificación desconocido es un error", () => {
     epica("E1");
     item("E1-01", {
-      criterios: "\n### E1-01.1 — Algo\n\n**Dado** x, **entonces** y.\n\n- verifica: `smoke`\n",
+      criterios: "\n### E1-01.1 — Algo\n\n**Dado** x, **entonces** y.\n\n- verify: `smoke`\n",
     });
     expect(hallazgos().some((h) => h.mensaje.includes("smoke"))).toBe(true);
   });

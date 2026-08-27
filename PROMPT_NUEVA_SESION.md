@@ -4,17 +4,18 @@
 
 ## ▼ COPIAR DESDE ACÁ ▼
 
-Estoy trabajando en **FaLuSpec**, un formato propio para especificar trabajo de software de modo que
-una máquina pueda verificarlo. Las **fases 0 y 1 están cerradas** y la **2 está en curso**: el formato
-va por la **v0.5**, cuatro de las cinco vistas se generan, y `faluspec validate` ya atrapa un ancla
-rota que `tsc` y los tests dejan pasar.
+Estoy trabajando en **FaLuSpec**, un formato **público** para especificar trabajo de software de modo
+que una máquina pueda verificarlo: la idea es que lo use quien quiera. Las **fases 0 y 1 están
+cerradas** y la **2 está en curso**: el formato va por la **v0.6**, cuatro de las cinco vistas se
+generan, y `faluspec validate` ya atrapa un ancla rota que `tsc` y los tests dejan pasar.
 
 Leé en este orden antes de proponer nada:
 
 1. `README.md` — qué es y el plan de 3 fases con sus gates.
-2. `docs/ESPECIFICACION.md` — el formato, hoy en **v0.5**. Es el entregable central de la fase 0.
+2. `docs/ESPECIFICACION.md` — el formato, hoy en **v0.6**. Es el entregable central de la fase 0.
    `docs/VISTAS.md` — la forma de lo que se genera. Es el entregable central de la fase 1.
-3. `docs/decisiones/001-por-que-existe.md` — contra qué se comparó y qué se tomó de cada alternativa.
+3. `docs/decisiones/` — por qué existe (001), por qué el CLI es Node/TS (002) y qué implica que sea
+   público (003). **Empezá por la 003**: es la que ordena lo que falta.
 4. El **Log de sesiones** al final de este archivo — empezá por la entrada de arriba.
 5. `docs/pruebas/` — los dos casos reales contra los que se probó el formato, con sus hallazgos.
    **Empezá por `002-arranque-desde-plantilla/HALLAZGOS.md`**: es el gate de la fase 0, ya corrido.
@@ -23,19 +24,23 @@ Leé en este orden antes de proponer nada:
 **Regla dura del proyecto:** la especificación define *la forma*, nunca *el contenido*. Si una regla
 no se puede enunciar sin nombrar un proyecto, un cliente o un stack concreto, no va en la spec.
 
-**Próximo paso — hay una decisión trabada y no es técnica.** El gate de la fase 2 tiene dos mitades:
-que el validador atrape una regresión real (✅ demostrado, prueba 005) y que **corra en CI** (❌). Lo
-segundo necesita que el CLI sea **instalable**, y eso es fase 3. El plan de tres fases tenía una
-dependencia cruzada que nadie vio.
+**Próximo paso — publicar, que ahora es el camino crítico.** El gate de la fase 2 («el validador corre
+en CI») está bloqueado porque el CLI no se puede instalar, y siendo público la salida es publicarlo,
+no vendorizarlo. Lo que hace falta, en orden:
 
-Las salidas están en `docs/pruebas/005-el-validador-atrapa/HALLAZGOS.md`: publicar el CLI (adelantar
-fase 3), vendorizarlo en el repo que lo use, o dejar el gate a medias declarado. **La decisión depende
-de si FaLuSpec va a ser una herramienta que otros usan o el método de un repo** — que es justo lo que
-la fase 3 tenía que resolver.
+1. **Licencia.** El repo no tiene ninguna. Sin licencia, «público» es una intención y no un permiso.
+   Es tu decisión: MIT es lo habitual para algo que se quiere que se adopte.
+2. **Remoto.** El repo es local. `faluspec` está libre en npm (verificado 2026-08-26).
+3. **Publicar el CLI**, activar el paso ya escrito en el `ci.yml` de 011 y cerrar el gate.
 
-Mientras tanto, lo que sí se puede hacer sin decidir eso: `map` y `status` en el CLI (las vistas ya
-están definidas y probadas, es trabajo mecánico) y `init`. `archive` necesita antes que el formato
-diga qué significa archivar.
+Antes de publicar hay una deuda de diseño anotada en la decisión 003: **la resolución de anclas está
+adentro del validador y tiene que salir a una interfaz por lenguaje.** Hoy un proyecto que no sea
+TS/JS recibe chequeo textual — es decir, la versión degradada de lo único que distingue al formato, y
+eso pesa distinto ahora que puede adoptarlo cualquiera.
+
+Y lo que se puede hacer sin depender de nada de eso: `map` y `status` en el CLI (las vistas ya están
+definidas y probadas, es mecánico) e `init`. `archive` necesita que el formato diga antes qué
+significa archivar.
 
 Y queda una decisión suelta en el proyecto de origen: el trabajo de la prueba 002 sigue en
 `011-SeguimientoDePedidos`, rama `chore/faluspec-arranque`, **sin mergear a `develop`**.
@@ -156,6 +161,39 @@ ciclos de diez comandos.
 ---
 
 ## Log de sesiones
+
+### 2026-08-26 (6) — FaLuSpec es público, y el formato pasa a inglés
+
+**Qué se decidió.** FaLuSpec es un **framework público**: cualquiera puede adoptarlo (decisión 003).
+Era la pregunta que la prueba 005 dejó trabada, y resolverla ordenó todo lo demás.
+
+**Consecuencias inmediatas, ya aplicadas.**
+
+**El formato pasa a la v0.6, cambio incompatible: los nombres de campo van en inglés.** `epica`→`epic`,
+`titulo`→`title`, `estado`→`status`, `fecha_estado`→`status_since`, `bloqueado_por`→`blocked_by`,
+`depende_de`→`depends_on`, `hito`→`milestone`, `ancla`→`anchor`, `verifica`→`verify`; los valores
+`integracion`→`integration`, `estatica`→`static`, `ninguna`→`none`; y `## Impacto`→`## Impact`.
+**La documentación sigue en español y la prosa de cada proyecto también** — el formato no la mira.
+
+El motivo no es estético: lo que se escribe en un backlog **queda en el repositorio de quien lo
+adopte** y no se puede traducir después sin romperle el trabajo. Un documento sí. Y hasta ayer había
+un híbrido que nadie había elegido: `estado: done`. Se migró todo —spec, vistas, plantilla, CLI, 52
+tests y el backlog de 011— mientras costaba un rato; con usuarios de verdad ya no.
+
+**La política de compatibilidad cambió.** Hasta ahora el formato podía romperse gratis: el único
+backlog afectado era propio y tenía nueve ítems. Ahora: **hasta la 1.0 puede romper y hay que
+decirlo**; desde la 1.0, un cambio incompatible sube la versión mayor y el CLI **rechaza** un backlog
+que no entiende en vez de interpretarlo mal. La §11 de la especificación lleva la tabla de migración.
+
+**Una decisión vieja quedó a reexaminar.** La 002 (CLI en Node/TS) se tomó cuando el único usuario era
+un monorepo pnpm. Su consecuencia declarada —un proyecto Python tendría anclas resueltas por texto—
+pesaba poco entonces y pesa mucho ahora. No se revierte, pero **la resolución de anclas tiene que
+salir a una interfaz por lenguaje antes de publicar**.
+
+**Pendiente.** Licencia y remoto (ver «Próximo paso»), y mergear o no `chore/faluspec-arranque` en 011.
+
+**Estado del repo.** `main`, sin remoto. El backlog de 011 quedó migrado y validando en verde: 0
+errores, 21 anclas resueltas (commit `d0e57a8` allá).
 
 ### 2026-08-26 (5) — El CLI, y el gate que depende de la fase 3
 

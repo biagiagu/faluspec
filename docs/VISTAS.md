@@ -78,13 +78,13 @@ Agrupada por épica. **El orden es numérico, no alfabético**: `E4-07` va antes
 | Columna | Sale de |
 |---|---|
 | `ID` | `id` |
-| `Título` | `titulo`, tal cual, sin truncar |
-| `Prio` | `prioridad` |
-| `Estado` | `estado`, tal cual |
-| `Desde` | `fecha_estado`, o `—` |
-| `Depende de` | `depende_de` unido por ` · `, o `—` |
+| `Título` | `title`, tal cual, sin truncar |
+| `Prio` | `priority` |
+| `Estado` | `status`, tal cual |
+| `Desde` | `status_since`, o `—` |
+| `Depende de` | `depends_on` unido por ` · `, o `—` |
 
-El encabezado de cada épica sale de `id` y `titulo` de la épica.
+El encabezado de cada épica sale de `id` y `title` de la épica.
 
 **No lleva:** criterios, historia, impacto, historial. Para eso está el ítem. Una tabla que intenta
 llevar los criterios deja de ser una vista y pasa a competir con la fuente — que es exactamente el
@@ -108,7 +108,7 @@ error que este formato existe para evitar.
 | **Total** | | 2 | 0 | 7 | 3 | 12 | 3/12 |
 ```
 
-Conteo de `estado` de los ítems de cada épica. `Cerrado` es una **fracción**, nunca un porcentaje:
+Conteo de `status` de los ítems de cada épica. `Cerrado` es una **fracción**, nunca un porcentaje:
 `1/9` y `11%` dicen lo mismo hasta que el redondeo empieza a mentir.
 
 Ordenada por número de épica —numérico, no alfabético—. La fila de total va al final.
@@ -119,7 +119,7 @@ Ordenada por número de épica —numérico, no alfabético—. La fila de total
 
 **Pregunta que responde:** qué está trabado, por quién, y desde cuándo.
 
-Es la vista que hizo posible `bloqueado_por` (§3.2 y §4 de la especificación). Antes esta pregunta
+Es la vista que hizo posible `blocked_by` (§3.2 y §4 de la especificación). Antes esta pregunta
 sólo se contestaba abriendo los ítems de a uno.
 
 ```markdown
@@ -135,13 +135,13 @@ sólo se contestaba abriendo los ítems de a uno.
 
 Una fila por causa. **El agrupamiento es por texto exacto**, y conviene decirlo sin adornos: dos
 ítems que esperan lo mismo escrito con otras palabras son dos filas. La forma de agrupar de verdad es
-declarar la causa **en la épica** (`bloqueado_por` de §4 de la especificación), y que los ítems no
+declarar la causa **en la épica** (`blocked_by` de §4 de la especificación), y que los ítems no
 declaren la suya.
 
 Contra un backlog real donde cada ítem explicó su bloqueo con sus propias palabras, esta vista produjo
 una fila por ítem — cumpliendo su especificación y no cumpliendo su promesa.
 
-`Desde` es la `fecha_estado` más antigua del grupo — hace cuánto que eso está trabado, no cuándo se
+`Desde` es la `status_since` más antigua del grupo — hace cuánto que eso está trabado, no cuándo se
 anotó el último.
 
 Ordenada por `Desde`, la más vieja arriba. **A igual fecha**, por el identificador del primer ítem del
@@ -154,7 +154,7 @@ parece: en un backlog escrito de una sentada, empatan todas.
 
 **Pregunta que responde:** cuánto de lo que afirmamos está realmente comprobado, y por quién.
 
-Es la vista que justifica que `verifica` y `ancla` sean campos y no prosa.
+Es la vista que justifica que `verify` y `anchor` sean campos y no prosa.
 
 ```markdown
 <!-- generado desde backlog/ — no editar a mano -->
@@ -164,7 +164,7 @@ Es la vista que justifica que `verifica` y `ancla` sean campos y no prosa.
 | Criterio | Ítem | Verificación | Test | Ancla |
 |---|---|---|---|---|
 | E4-07.1 | done | unit | reintento.test.ts::espera creciente con techo | ✓ |
-| E4-07.5 | done | manual | — | ninguna |
+| E4-07.5 | done | manual | — | none |
 
 ## Totales
 
@@ -175,17 +175,17 @@ Es la vista que justifica que `verifica` y `ancla` sean campos y no prosa.
 | e2e | 0 | 0/21 |
 | estatica | 2 | 2/21 |
 | **manual** | **4** | **4/21** |
-| sin ancla declarada (`ninguna`) | 5 | 5/21 |
+| sin ancla declarada (`none`) | 5 | 5/21 |
 | anclas que no resuelven | 0 | — |
 ```
 
 | Columna | Sale de |
 |---|---|
 | `Criterio` | el identificador del criterio |
-| `Ítem` | el `estado` del ítem que lo contiene |
+| `Ítem` | el `status` del ítem que lo contiene |
 | `Verificación` | el tipo declarado |
 | `Test` | el test nombrado, o `—` si el tipo es `manual` |
-| `Ancla` | `✓` si resuelve · `ninguna` si está declarada así · `✗` si no resuelve |
+| `Ancla` | `✓` si resuelve · `none` si está declarada así · `✗` si no resuelve |
 
 Las dos últimas filas de totales son las que valen: **qué porcentaje del proyecto depende de una
 persona mirando**, y **cuánto de la especificación dejó de tener sustento en el código**. Un `✗` es un
@@ -197,7 +197,7 @@ incidente, no una métrica: significa que el código se movió y la especificaci
 
 **Pregunta que responde:** qué entra en cada corte de release.
 
-Filas: épicas. Columnas: hitos. Celdas: los ítems de esa épica cuyo campo `hito` apunta a ése.
+Filas: épicas. Columnas: hitos. Celdas: los ítems de esa épica cuyo campo `milestone` apunta a ése.
 
 Es además la vista que responde **qué contiene un hito**, pregunta que antes contestaba el propio
 hito con una lista escrita a mano.
@@ -220,7 +220,7 @@ Columnas ordenadas por número de hito, con `sin hito` siempre al final. Dentro 
 ítems por identificador numérico, unidos por ` · `, **sin abreviar rangos**: la abreviatura ahorraba
 ancho y costaba unicidad, y la regla 8 no admite dos salidas válidas.
 
-**Las columnas salen de los `hito` que declaran los ítems**, que es lo único que esta vista lee. Dos
+**Las columnas salen de los `milestone` que declaran los ítems**, que es lo único que esta vista lee. Dos
 consecuencias que hay que conocer: un hito declarado en el plan sin ningún ítem asignado **no
 aparece** —y es justamente el que hay que mirar—, y un ítem que apunte a un hito inexistente crea una
 columna en vez de fallar. Comprobar que el hito existe es trabajo del validador, no de la vista.
@@ -237,7 +237,7 @@ Un hito declaraba `Contiene: E2, E4, E10 completas · E6 sin el heatmap` — **p
 se computa: «E6 sin el heatmap» no dice qué ítems son. El story map necesitaba saber, para cada ítem,
 a qué hito pertenece, y esa relación no existía en ningún campo.
 
-**Resuelto:** la relación vive en el ítem, en el campo `hito` (especificación §3.2), y el hito dejó de
+**Resuelto:** la relación vive en el ítem, en el campo `milestone` (especificación §3.2), y el hito dejó de
 llevar su lista de contenido (§5.1). El hito conserva lo único que una máquina no puede derivar —su
 significado— y pierde una lista que se desactualizaba sola.
 

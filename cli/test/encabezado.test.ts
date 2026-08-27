@@ -3,16 +3,16 @@ import { leerEncabezado, comoLista } from "../src/formato/encabezado.js";
 
 const ITEM = `---
 id: E4-07
-epica: E4
-titulo: Reintento de notificaciones fallidas
-prioridad: P1
-estado: done
-fecha_estado: 2026-03-14
-depende_de: [E4-03]
-hito: H1
+epic: E4
+title: Reintento de notificaciones fallidas
+priority: P1
+status: done
+status_since: 2026-03-14
+depends_on: [E4-03]
+milestone: H1
 ---
 
-## Historia
+## Story
 
 Como responsable de la operación...
 `;
@@ -22,28 +22,28 @@ describe("leerEncabezado: lo que el formato admite", () => {
     const { encabezado, problemas } = leerEncabezado(ITEM);
     expect(problemas).toEqual([]);
     expect(encabezado.campos.get("id")).toBe("E4-07");
-    expect(encabezado.campos.get("titulo")).toBe("Reintento de notificaciones fallidas");
-    expect(encabezado.campos.get("hito")).toBe("H1");
+    expect(encabezado.campos.get("title")).toBe("Reintento de notificaciones fallidas");
+    expect(encabezado.campos.get("milestone")).toBe("H1");
   });
 
   it("devuelve el cuerpo sin el encabezado", () => {
     const { cuerpo } = leerEncabezado(ITEM);
-    expect(cuerpo.trimStart().startsWith("## Historia")).toBe(true);
+    expect(cuerpo.trimStart().startsWith("## Story")).toBe(true);
   });
 
   it("un valor puede contener dos puntos sin escaparlos", () => {
     const texto = `---
-bloqueado_por: falta el dato: nadie lo pidió
+blocked_by: falta el dato: nadie lo pidió
 ---
 `;
     const { encabezado, problemas } = leerEncabezado(texto);
     expect(problemas).toEqual([]);
-    expect(encabezado.campos.get("bloqueado_por")).toBe("falta el dato: nadie lo pidió");
+    expect(encabezado.campos.get("blocked_by")).toBe("falta el dato: nadie lo pidió");
   });
 
   it("todo valor es texto: `no` no se convierte en booleano", () => {
-    const { encabezado } = leerEncabezado("---\ntitulo: no\n---\n");
-    expect(encabezado.campos.get("titulo")).toBe("no");
+    const { encabezado } = leerEncabezado("---\ntitle: no\n---\n");
+    expect(encabezado.campos.get("title")).toBe("no");
   });
 
   it("todo valor es texto: una versión no se convierte en número", () => {
@@ -52,7 +52,7 @@ bloqueado_por: falta el dato: nadie lo pidió
   });
 
   it("tolera líneas en blanco entre campos", () => {
-    const { encabezado, problemas } = leerEncabezado("---\nid: E1-01\n\nestado: todo\n---\n");
+    const { encabezado, problemas } = leerEncabezado("---\nid: E1-01\n\nstatus: todo\n---\n");
     expect(problemas).toEqual([]);
     expect(encabezado.campos.size).toBe(2);
   });
@@ -60,7 +60,7 @@ bloqueado_por: falta el dato: nadie lo pidió
   it("recuerda en qué línea está cada campo", () => {
     const { encabezado } = leerEncabezado(ITEM);
     expect(encabezado.lineas.get("id")).toBe(2);
-    expect(encabezado.lineas.get("estado")).toBe(6);
+    expect(encabezado.lineas.get("status")).toBe(6);
   });
 });
 
@@ -73,7 +73,7 @@ describe("leerEncabezado: lo que el formato rechaza", () => {
   });
 
   it("rechaza los valores multilínea", () => {
-    const { problemas } = leerEncabezado("---\ntitulo: |\n---\n");
+    const { problemas } = leerEncabezado("---\ntitle: |\n---\n");
     expect(problemas[0]?.mensaje).toContain("multilínea");
   });
 
@@ -88,9 +88,9 @@ describe("leerEncabezado: lo que el formato rechaza", () => {
   });
 
   it("rechaza un campo repetido en vez de quedarse con el último", () => {
-    const { problemas, encabezado } = leerEncabezado("---\nestado: todo\nestado: done\n---\n");
+    const { problemas, encabezado } = leerEncabezado("---\nstatus: todo\nstatus: done\n---\n");
     expect(problemas[0]?.mensaje).toContain("repetido");
-    expect(encabezado.campos.get("estado")).toBe("todo");
+    expect(encabezado.campos.get("status")).toBe("todo");
   });
 
   it("rechaza una línea que no es clave: valor", () => {
@@ -104,7 +104,7 @@ describe("leerEncabezado: lo que el formato rechaza", () => {
   });
 
   it("avisa cuando el encabezado no se cierra", () => {
-    const { problemas } = leerEncabezado("---\nid: E1-01\n\n## Historia\n");
+    const { problemas } = leerEncabezado("---\nid: E1-01\n\n## Story\n");
     expect(problemas.at(-1)?.mensaje).toContain("no se cierra");
   });
 });

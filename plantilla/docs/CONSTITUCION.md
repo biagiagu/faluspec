@@ -8,7 +8,7 @@
 > Este documento **no cita la especificación por número de sección**, porque no está en tu repo:
 > cuando una regla del formato hace falta acá, va enunciada.
 
-- **Escrito contra FaLuSpec:** `0.5` — la fuente de este dato es el archivo `.faluspec` de la raíz;
+- **Escrito contra FaLuSpec:** `0.6` — la fuente de este dato es el archivo `.faluspec` de la raíz;
   acá se repite para quien lea.
 - **Última revisión:** `<fecha>`
 
@@ -51,7 +51,7 @@ Los tres primeros los pide el formato y valen para cualquier proyecto. Los del m
    declarada. Una verificación vale si **puede ponerse en rojo cuando el criterio se incumple**: un
    test que pasaría igual con el problema presente no verifica nada.
 2. Su historial registra lo que se decidió y lo que quedó afuera.
-3. Su sección `## Impacto` declara qué movió fuera de sus propios criterios —otro ítem cerrado, una
+3. Su sección `## Impact` declara qué movió fuera de sus propios criterios —otro ítem cerrado, una
    regla de acá, el comportamiento de un ambiente— o dice «ninguno». La pregunta es obligatoria; la
    respuesta suele ser «ninguno», y ese es el punto.
 4. `<paso propio: revisión, build verde, tipos, lint…>`
@@ -84,9 +84,9 @@ Los tipos de verificación de la especificación se traducen así en este proyec
 | Tipo | Acá es |
 |---|---|
 | `unit` | `<comando o convención de archivo>` |
-| `integracion` | `<comando; qué dependencias hay que levantar>` |
+| `integration` | `<comando; qué dependencias hay que levantar>` |
 | `e2e` | `<comando>` |
-| `estatica` | `<qué comando chequea el repositorio; dónde corre>` |
+| `static` | `<qué comando chequea el repositorio; dónde corre>` |
 | `manual` | Lo comprueba una persona. Registrar quién y cuándo en el historial del ítem. |
 
 **Un tipo puede estar inhabilitado en este proyecto.** Si no existe la herramienta —es común que

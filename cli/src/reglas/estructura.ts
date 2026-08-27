@@ -29,8 +29,8 @@ export interface Hallazgo {
 }
 
 const ESTADOS = new Set(["todo", "wip", "done", "blocked"]);
-const TIPOS_VERIFICACION = new Set(["unit", "integracion", "e2e", "estatica", "manual"]);
-const OBLIGATORIOS = ["id", "epica", "titulo", "prioridad", "estado"];
+const TIPOS_VERIFICACION = new Set(["unit", "integration", "e2e", "static", "manual"]);
+const OBLIGATORIOS = ["id", "epic", "title", "priority", "status"];
 
 export function validarEstructura(backlog: Backlog): Hallazgo[] {
   const hallazgos: Hallazgo[] = [];
@@ -105,33 +105,33 @@ function validarItem(item: Documento, backlog: Backlog, vistos: Map<string, stri
   if (duplicado) out.push(de("§6 identificadores", `identificador repetido, ya está en ${duplicado}`));
   vistos.set(item.id, item.archivo);
 
-  const epica = item.campos.get("epica") ?? "";
+  const epica = item.campos.get("epic") ?? "";
   if (epica && !backlog.epicas.has(epica)) {
     out.push(de("§3.2 campos", `la épica \`${epica}\` no existe`));
   }
   if (epica && !item.id.startsWith(epica + "-")) {
-    out.push(de("§3.2 campos", `\`epica: ${epica}\` no coincide con el prefijo del id`));
+    out.push(de("§3.2 campos", `\`epic: ${epica}\` no coincide con el prefijo del id`));
   }
 
-  const estado = item.campos.get("estado") ?? "";
+  const estado = item.campos.get("status") ?? "";
   if (estado && !ESTADOS.has(estado)) {
     out.push(de("§7 estados", `estado desconocido \`${estado}\``));
   }
 
-  if ((estado === "done" || estado === "blocked") && !item.campos.get("fecha_estado")) {
-    out.push(de("§3.3 regla 3", `un ítem \`${estado}\` necesita \`fecha_estado\``));
+  if ((estado === "done" || estado === "blocked") && !item.campos.get("status_since")) {
+    out.push(de("§3.3 regla 3", `un ítem \`${estado}\` necesita \`status_since\``));
   }
 
   if (estado === "blocked") {
-    const propio = item.campos.get("bloqueado_por");
-    const heredado = backlog.epicas.get(epica)?.campos.get("bloqueado_por");
+    const propio = item.campos.get("blocked_by");
+    const heredado = backlog.epicas.get(epica)?.campos.get("blocked_by");
     if (!propio && !heredado) {
-      out.push(de("§3.3 regla 6", "un ítem `blocked` declara `bloqueado_por`, propio o de su épica"));
+      out.push(de("§3.3 regla 6", "un ítem `blocked` declara `blocked_by`, propio o de su épica"));
     } else if (propio && propio.length > 120) {
       out.push(
         de(
           "§3.2 campos",
-          `\`bloqueado_por\` tiene ${propio.length} caracteres: es una línea corta, el detalle va al historial`,
+          `\`blocked_by\` tiene ${propio.length} caracteres: es una línea corta, el detalle va al historial`,
           "aviso",
         ),
       );
@@ -139,7 +139,7 @@ function validarItem(item: Documento, backlog: Backlog, vistos: Map<string, stri
   }
 
   if (estado === "done") {
-    if (!/^##\s+Impacto\s*$/m.test(item.cuerpo)) {
+    if (!/^##\s+Impact\s*$/m.test(item.cuerpo)) {
       out.push(de("§3.5 impacto", "un ítem `done` declara su impacto, aunque sea «ninguno»"));
     }
     if (item.criterios.length === 0) {
@@ -150,10 +150,10 @@ function validarItem(item: Documento, backlog: Backlog, vistos: Map<string, stri
   for (const dep of listaDeDependencias(item, out, de)) {
     const otro = backlog.items.get(dep);
     if (!otro) {
-      out.push(de("§3.3 regla 1", `\`depende_de\` apunta a \`${dep}\`, que no existe`));
+      out.push(de("§3.3 regla 1", `\`depends_on\` apunta a \`${dep}\`, que no existe`));
       continue;
     }
-    if (estado === "done" && otro.campos.get("estado") !== "done") {
+    if (estado === "done" && otro.campos.get("status") !== "done") {
       out.push(de("§3.3 regla 5", `está \`done\` pero depende de \`${dep}\`, que no lo está`));
     }
   }
@@ -167,10 +167,10 @@ function listaDeDependencias(
   out: Hallazgo[],
   de: (r: string, m: string, g?: Gravedad) => Hallazgo,
 ): string[] {
-  const crudo = item.campos.get("depende_de");
+  const crudo = item.campos.get("depends_on");
   if (crudo === undefined || crudo === "") return [];
   if (!crudo.startsWith("[") || !crudo.endsWith("]")) {
-    out.push(de("§3.6 encabezado", "`depende_de` es una lista entre corchetes"));
+    out.push(de("§3.6 encabezado", "`depends_on` es una lista entre corchetes"));
     return [];
   }
   return crudo
@@ -208,8 +208,8 @@ function validarCriterios(doc: Documento, cerrado: boolean, vistos: Map<string, 
     }
 
     for (const ancla of c.anclas) {
-      if (ancla.startsWith("ninguna") && !/ninguna\s+—\s+\S/.test(ancla)) {
-        out.push(de("§2.3 ancla", "`ancla: ninguna` lleva motivo: sin él no se distingue de un olvido"));
+      if (ancla.startsWith("none") && !/none\s+—\s+\S/.test(ancla)) {
+        out.push(de("§2.3 ancla", "`anchor: none` lleva motivo: sin él no se distingue de un olvido"));
       }
     }
 
@@ -249,7 +249,7 @@ function detectarCiclos(backlog: Backlog): Hallazgo[] {
       return;
     }
     estado.set(id, "abierto");
-    const crudo = backlog.items.get(id)?.campos.get("depende_de") ?? "";
+    const crudo = backlog.items.get(id)?.campos.get("depends_on") ?? "";
     for (const dep of crudo.replace(/[[\]]/g, "").split(",").map((x) => x.trim()).filter(Boolean)) {
       if (backlog.items.has(dep)) visitar(dep, [...camino, id]);
     }

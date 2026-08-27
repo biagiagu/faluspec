@@ -9,7 +9,7 @@ descripción en vez de un identificador, pedí que se especifique primero.
 ## Cómo trabajás
 
 1. Leé el ítem completo y `docs/CONSTITUCION.md`.
-2. Comprobá que sus `depende_de` estén en `done`. Si no, pará y decilo.
+2. Comprobá que sus `depends_on` estén en `done`. Si no, pará y decilo.
 3. Implementá **criterio por criterio**, no el ítem entero de una. Cada criterio tiene su ancla y su
    test: son tu lista de tareas, ya escrita.
 4. Escribí los tests que la verificación nombra, **con ese nombre**. El nombre es parte de la

@@ -99,14 +99,14 @@ describe("las otras formas de ancla", () => {
     expect(resolverAncla(raiz, "public").estado).toBe("no-resuelve");
   });
 
-  it("`ninguna` con motivo es válida", () => {
-    const r = resolverAncla(raiz, "ninguna — el estado vive fuera del repositorio");
+  it("`none` con motivo es válida", () => {
+    const r = resolverAncla(raiz, "none — el estado vive fuera del repositorio");
     expect(r.estado).toBe("declarada-ninguna");
     expect(r.detalle).toBe("el estado vive fuera del repositorio");
   });
 
-  it("`ninguna` sin motivo no se distingue de un olvido", () => {
-    expect(resolverAncla(raiz, "ninguna").estado).toBe("sin-motivo");
+  it("`none` sin motivo no se distingue de un olvido", () => {
+    expect(resolverAncla(raiz, "none").estado).toBe("sin-motivo");
   });
 });
 

@@ -16,17 +16,17 @@ validador automático, este trabajo es el que evita que el backlog se pudra en s
 
 **Encabezados de ítem**
 
-- `id`, `epica`, `titulo`, `prioridad`, `estado` presentes.
-- `epica` coincide con el prefijo del `id`, y la épica existe.
-- `fecha_estado` presente si el estado es `done` o `blocked`.
-- `bloqueado_por` presente si el estado es `blocked`, propio o declarado por su épica.
-- `bloqueado_por` es **una línea corta**. Si explica en tres renglones, el detalle tiene que mudarse al
+- `id`, `epic`, `title`, `priority`, `status` presentes.
+- `epic` coincide con el prefijo del `id`, y la épica existe.
+- `status_since` presente si el estado es `done` o `blocked`.
+- `blocked_by` presente si el estado es `blocked`, propio o declarado por su épica.
+- `blocked_by` es **una línea corta**. Si explica en tres renglones, el detalle tiene que mudarse al
   historial: este campo termina dentro de una celda de tabla, y ahí no se puede truncar.
-- `prioridad` es uno de los niveles que define la constitución.
+- `priority` es uno de los niveles que define la constitución.
 
 **Dependencias**
 
-- Todo `depende_de` apunta a un ítem que existe.
+- Todo `depends_on` apunta a un ítem que existe.
 - Sin ciclos.
 - Ningún ítem `done` depende de uno que no lo está.
 
@@ -36,7 +36,7 @@ validador automático, este trabajo es el que evita que el backlog se pudra en s
 - **Cada ancla resuelve.** Abrí el archivo y buscá el símbolo. Un ancla que no resuelve es el hallazgo
   más importante que podés encontrar: significa que el código se movió y la especificación quedó
   mintiendo.
-- Un ancla `ninguna` **lleva motivo**. Sin motivo no se distingue de un olvido.
+- Un ancla `none` **lleva motivo**. Sin motivo no se distingue de un olvido.
 - Un ancla a archivo entero o a directorio vale sólo si no hay símbolo posible.
 - El tipo de verificación es uno de los cinco, y no está inhabilitado por la constitución.
 - Cuando el tipo no es `manual`, el test que nombra **existe** y se llama así.
@@ -45,7 +45,7 @@ validador automático, este trabajo es el que evita que el backlog se pudra en s
   se ponga rojo, y es lo mismo que el criterio prohíbe?* Un criterio que exige «cada elemento con su
   descripción, sin nombres genéricos» verificado por un test que cuenta elementos **cerró en verde con
   el problema adentro**. Está formalmente válido y materialmente vacío.
-- La sección `## Impacto` existe, aunque diga «ninguno».
+- La sección `## Impact` existe, aunque diga «ninguno».
 
 **Escenarios**
 

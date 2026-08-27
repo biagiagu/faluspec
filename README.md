@@ -5,6 +5,10 @@ Un formato para especificar trabajo de software de modo que **una máquina pueda
 > **Estado: fases 0 y 1 cerradas, fase 2 en curso.** El formato está definido y probado contra casos
 > reales, cuatro de sus cinco vistas se generan, y `faluspec validate` ya atrapa un ancla rota que
 > `tsc` y los tests dejan pasar. Ver [el plan](#el-plan).
+>
+> **Es un framework público** ([decisión 003](docs/decisiones/003-faluspec-es-publico.md)): cualquiera
+> puede adoptarlo. **Hasta la 1.0 el formato puede romper compatibilidad** — quien adopte hoy va a
+> tener que migrar, y a cambio sus hallazgos todavía pueden cambiar el formato.
 
 ## La idea en un párrafo
 
@@ -23,8 +27,8 @@ tocar.
 **Dado** un envío que falló por error de red, **cuando** el reintento se programa,
 **entonces** la espera es el doble de la anterior, con un techo de 30 minutos.
 
-- ancla: `src/notificaciones/reintento.ts#calcularEspera`
-- verifica: `unit` → `reintento.test.ts::espera creciente con techo`
+- anchor: `src/notificaciones/reintento.ts#calcularEspera`
+- verify: `unit` → `reintento.test.ts::espera creciente con techo`
 ```
 
 Cuatro partes: identificador direccionable, escenario observable, ancla al símbolo, estrategia de
@@ -38,6 +42,10 @@ La [especificación completa](docs/ESPECIFICACION.md) define los cuatro construc
 Equipos chicos y solistas que trabajan con agentes de IA y quieren **el plan adentro del repo**,
 versionado junto al código, en vez de en un tablero aparte.
 
+Los nombres de campo del formato están en inglés; la documentación, en español. Lo que se escribe en
+un backlog queda en el repositorio de quien lo adopte y no se puede traducir después sin romperle el
+trabajo — un documento sí.
+
 No compite con Jira ni con Linear. Si tu planificación ya vive cómoda en un issue tracker, esto no te
 resuelve nada.
 
@@ -45,7 +53,7 @@ resuelve nada.
 
 ```
 cli/                      faluspec validate — Node/TypeScript
-docs/ESPECIFICACION.md    la definición del formato — v0.5
+docs/ESPECIFICACION.md    la definición del formato — v0.6
 docs/VISTAS.md            la forma de lo que se genera a partir de los ítems
 docs/decisiones/          por qué existe y contra qué se comparó
 docs/pruebas/             los casos reales contra los que se probó, con sus hallazgos

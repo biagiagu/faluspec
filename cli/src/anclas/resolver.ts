@@ -34,10 +34,10 @@ const EXTENSIONES_TS = new Set([".ts", ".tsx", ".mts", ".cts", ".js", ".jsx", ".
 export function resolverAncla(raiz: string, ancla: string): Resolucion {
   const texto = ancla.trim();
 
-  if (texto.startsWith("ninguna")) {
-    return /^ninguna\s+—\s+\S/.test(texto)
-      ? { estado: "declarada-ninguna", detalle: texto.replace(/^ninguna\s+—\s*/, "") }
-      : { estado: "sin-motivo", detalle: "`ninguna` lleva motivo" };
+  if (texto.startsWith("none")) {
+    return /^none\s+—\s+\S/.test(texto)
+      ? { estado: "declarada-ninguna", detalle: texto.replace(/^none\s+—\s*/, "") }
+      : { estado: "sin-motivo", detalle: "`none` lleva motivo" };
   }
 
   if (texto === "") return { estado: "malformada", detalle: "ancla vacía" };

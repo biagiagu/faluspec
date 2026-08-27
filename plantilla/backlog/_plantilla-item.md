@@ -1,23 +1,23 @@
 ---
 id: E<n>-<nn>
-epica: E<n>
-titulo: <Una línea, en imperativo o sustantivo>
-prioridad: <P0 | P1 | P2 | P3>
-estado: <todo | wip | done | blocked>
-fecha_estado: <aaaa-mm-dd — obligatorio en done y en blocked>
-bloqueado_por: <obligatorio en blocked: qué se espera, y de quién>
-depende_de: [<E<n>-<nn>>]
-hito: <opcional: H<n>, el corte de release al que pertenece. Sin hito también es válido.>
+epic: E<n>
+title: <Una línea, en imperativo o sustantivo>
+priority: <P0 | P1 | P2 | P3>
+status: <todo | wip | done | blocked>
+status_since: <aaaa-mm-dd — obligatorio en done y en blocked>
+blocked_by: <obligatorio en blocked: qué se espera, y de quién>
+depends_on: [<E<n>-<nn>>]
+milestone: <opcional: H<n>, el corte de release al que pertenece. Sin hito también es válido.>
 ---
 
-## Historia
+## Story
 
 Como <rol>, quiero <capacidad>, para <por qué importa>.
 
 <El "para" es la parte que se saltea y la única que permite descartar el ítem cuando el motivo
 desaparece.>
 
-## Criterios
+## Criteria
 
 <Uno por afirmación verificable de forma independiente. Si se parte y deja de significar algo, no
 era un criterio: era medio criterio.>
@@ -26,23 +26,23 @@ era un criterio: era medio criterio.>
 
 **Dado** <situación>, **cuando** <acción>, **entonces** <resultado observable desde afuera del código>.
 
-- ancla: `<ruta/al/archivo.ext#simbolo>`
-- verifica: `<unit | integracion | e2e | estatica | manual>` → `<archivo::nombre del test>`
+- anchor: `<ruta/al/archivo.ext#simbolo>`
+- verify: `<unit | integration | e2e | static | manual>` → `<archivo::nombre del test>`
 
 ### E<n>-<nn>.2 — <título>
 
 **Dado** <...>, **cuando** <...>, **entonces** <...>.
 
-- ancla: `ninguna` — <motivo: vive fuera del repo · el alcance es el repo entero · es el test mismo>
-- verifica: `manual`
+- anchor: `none` — <motivo: vive fuera del repo · el alcance es el repo entero · es el test mismo>
+- verify: `manual`
 
-## Impacto
+## Impact
 
 <Obligatorio en `done`. Qué movió este ítem fuera de sus propios criterios: otro ítem ya cerrado, una
 regla de la constitución, el comportamiento de un ambiente. Si no movió nada, escribí "Ninguno". La
 pregunta es obligatoria justamente porque la respuesta casi siempre es esa.>
 
-## Historial
+## History
 
 <Arranca cuando hay algo que registrar, no cuando empieza la implementación. Van acá las decisiones
 sobre el ítem —por qué está bloqueado, qué se descartó al escribirlo, por qué un criterio cambió— y

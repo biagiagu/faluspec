@@ -58,7 +58,7 @@ arrancar sin decidirlas. Todas son reversibles:
 |---|---|---|
 | Ubicación de los ítems | `backlog/` plano | Cuando pases de ~100 ítems y recorrerlo moleste |
 | Dónde vive la épica | `backlog/E<n>.md`, junto a sus ítems | Nunca, salvo que separes por directorio |
-| Dónde vive el historial | Sección `## Historial` al final del ítem | Si el ítem se vuelve ilegible de tan largo |
+| Dónde vive el historial | Sección `## History` al final del ítem | Si el ítem se vuelve ilegible de tan largo |
 | Prioridades | `P0` … `P3` | Cuando tu equipo use otra escala |
 
 Las dos del medio el formato **no las define**: son huecos reales, no decisiones tuyas. Si tu proyecto

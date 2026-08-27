@@ -81,7 +81,7 @@ function leerDocumento(ruta: string, archivo: string): Documento {
 }
 
 const ENCABEZADO_CRITERIO = /^###\s+(\S+)\s+—\s+(.+?)\s*$/;
-const CAMPO_CRITERIO = /^-\s+(ancla|verifica):\s*(.+?)\s*$/;
+const CAMPO_CRITERIO = /^-\s+(anchor|verify):\s*(.+?)\s*$/;
 
 export function leerCriterios(cuerpo: string, desplazamiento = 0): Criterio[] {
   const criterios: Criterio[] = [];
@@ -113,7 +113,7 @@ export function leerCriterios(cuerpo: string, desplazamiento = 0): Criterio[] {
       continue;
     }
     if (!actual) continue;
-    // Otro encabezado de nivel 2 corta el criterio: `## Impacto`, `## Historial`.
+    // Otro encabezado de nivel 2 corta el criterio: `## Impact`, `## History`.
     if (fila.startsWith("## ")) {
       cerrar();
       actual = null;
@@ -121,7 +121,7 @@ export function leerCriterios(cuerpo: string, desplazamiento = 0): Criterio[] {
     }
     const campo = CAMPO_CRITERIO.exec(fila);
     if (campo) {
-      if (campo[1] === "ancla") actual.anclas.push(limpiar(campo[2] ?? ""));
+      if (campo[1] === "anchor") actual.anclas.push(limpiar(campo[2] ?? ""));
       else actual.verifica = limpiar(campo[2] ?? "");
       continue;
     }

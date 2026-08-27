@@ -17,7 +17,7 @@ sirva para decidir: «¿este ítem entra en H1?» tiene que poder responderse le
 
 **Estado:** abierto
 
-`<El hito NO lleva su lista de contenido: la relación vive en cada ítem, en su campo `hito`. Para
+`<El hito NO lleva su lista de contenido: la relación vive en cada ítem, en su campo `milestone`. Para
 saber qué contiene, se mira el story map, que se genera y por eso no puede mentir.>`
 
 `<Si este hito es el MVP, decilo acá. Es un atributo opcional del hito, no un constructo aparte, y
