@@ -20,6 +20,8 @@ validador automático, este trabajo es el que evita que el backlog se pudra en s
 - `epica` coincide con el prefijo del `id`, y la épica existe.
 - `fecha_estado` presente si el estado es `done` o `blocked`.
 - `bloqueado_por` presente si el estado es `blocked`, propio o declarado por su épica.
+- `bloqueado_por` es **una línea corta**. Si explica en tres renglones, el detalle tiene que mudarse al
+  historial: este campo termina dentro de una celda de tabla, y ahí no se puede truncar.
 - `prioridad` es uno de los niveles que define la constitución.
 
 **Dependencias**

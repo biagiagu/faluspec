@@ -5,9 +5,9 @@
 ## ▼ COPIAR DESDE ACÁ ▼
 
 Estoy trabajando en **FaLuSpec**, un formato propio para especificar trabajo de software de modo que
-una máquina pueda verificarlo. La **fase 0 está cerrada** y la **fase 1 tiene su gate cumplido**: el
-formato va por la **v0.4**, las vistas están definidas, y una de ellas ya se genera y coincide byte a
-byte con la escrita a mano. Todavía no hay CLI.
+una máquina pueda verificarlo. Las **fases 0 y 1 están cerradas**: el formato va por la **v0.4**, la
+plantilla arranca un proyecto en una hora, y **cuatro de las cinco vistas se generan** y coinciden
+byte a byte con las escritas a mano. Arranca la **fase 2**: el CLI.
 
 Leé en este orden antes de proponer nada:
 
@@ -23,14 +23,17 @@ Leé en este orden antes de proponer nada:
 **Regla dura del proyecto:** la especificación define *la forma*, nunca *el contenido*. Si una regla
 no se puede enunciar sin nombrar un proyecto, un cliente o un stack concreto, no va en la spec.
 
-**Próximo paso — hay que decidir el alcance.** El gate de la fase 1 está cumplido, pero su entregable
-no: de las cinco vistas se generó **una**. Las opciones son (a) generar las otras tres derivables
-—bloqueos, resumen por épica, story map— con scripts desechables y recién ahí cerrar la fase 1, o
-(b) darla por cerrada y arrancar la fase 2, donde el CLI las genera todas de una. Ojo con el sesgo:
-`generar-tabla.py` funciona, y eso hace parecer trivial lo que falta.
+**Próximo paso — fase 2, el CLI.** Su gate: el validador corre en CI y atrapa una regresión real.
+Antes de escribir una línea hay que cerrar tres decisiones que condicionan el parser, todas anotadas
+en §9 de la especificación y las tres reclamadas por las pruebas:
 
-Antes del CLI hay que cerrar dos decisiones que condicionan el parser: **qué subconjunto de YAML es el
-encabezado** (§9.7) y **cómo declara un proyecto su versión de formato** (§9.3).
+1. **Qué subconjunto de YAML es el encabezado** (§9.7). Hoy es implícito: `clave: valor` en una línea.
+2. **Cómo declara un proyecto su versión de formato** (§9.3). Ya salió tres veces; la última, un story
+   map inútil generado desde un backlog viejo sin que nada avisara.
+3. **El lenguaje del CLI**, que sigue sin comprometerse.
+
+Los scripts de `docs/pruebas/003` y `004` son **desechables a propósito**: sirvieron para definir las
+vistas, no para ser el CLI. No los promuevas — reimplementalos con lo que las pruebas enseñaron.
 
 Y queda una decisión suelta en el proyecto de origen: el trabajo de la prueba 002 sigue en
 `011-SeguimientoDePedidos`, rama `chore/faluspec-arranque`, **sin mergear a `develop`**.
@@ -147,6 +150,39 @@ ciclos de diez comandos.
 ---
 
 ## Log de sesiones
+
+### 2026-08-26 (4) — Las otras vistas · fase 1 cerrada
+
+**Qué se hizo.** Prueba 004: se generaron bloqueos, resumen por épica y story map. **Las tres coinciden
+byte a byte con las escritas a mano**, que otra vez se commitearon antes que el generador. Con esto
+**las cuatro vistas derivables de `backlog/` se generan**; la quinta, cobertura por criterio, necesita
+resolver anclas contra el código y es trabajo del validador.
+
+**Cómo se probó, que es la parte que importa.** Dos backlogs: un **fixture sintético** —tres épicas
+con `E4 < E7 < E19`, huecos de numeración, bloqueo heredado de la épica, ítems con y sin hito— y el
+backlog **real** de 011. El fixture prueba que el generador hace lo que dice; el backlog real prueba
+**si lo que dice sirve**. Los hallazgos salieron todos del segundo.
+
+**Los tres que valen:**
+
+1. **La vista de bloqueos promete agrupar y contra datos reales no agrupó nada.** Siete filas para
+   siete ítems que esperan lo mismo con otras palabras: agrupa por texto exacto. Cumplía su
+   especificación y no su promesa. Ahora lo dice, y remite al `bloqueado_por` de épica.
+2. **Un orden parcialmente declarado no es un orden.** Las siete filas tenían la misma fecha y el
+   desempate lo decidió un detalle de implementación. Mismo hallazgo que el orden numérico de la 003,
+   en otra vista.
+3. **La abreviatura opcional de rangos rompía la comparabilidad**: dos generadores igualmente válidos,
+   dos archivos distintos. Se prohibió. `VISTAS.md` ganó la regla 8 — **un solo resultado válido**.
+
+**Sin resolver, para la fase 2:** el story map lee sólo `backlog/` pero los hitos viven en el plan, así
+que un hito sin ítems no aparece y uno inexistente crea una columna (W5). Es la primera vista que
+necesita **dos fuentes**, y el validador va a tener que leer las dos igual.
+
+**Pendiente.** Nada bloqueante.
+
+**Próximo paso.** Fase 2, con las tres decisiones previas listadas arriba.
+
+**Estado del repo.** `main`, sin remoto.
 
 ### 2026-08-26 (3) — Las vistas, la v0.4 y el gate de la fase 1
 

@@ -1,6 +1,6 @@
 # FaLuSpec — las vistas
 
-> Versión 0.3 · borrador · 2026-08-26 · acompaña a la [especificación](ESPECIFICACION.md) §8.
+> Versión 0.4 · borrador · 2026-08-26 · acompaña a la [especificación](ESPECIFICACION.md) §8.
 >
 > Define **la forma de lo que se genera**. Como la especificación, no puede mencionar un dominio, un
 > cliente ni un stack concreto.
@@ -19,11 +19,19 @@ que la próxima regeneración va a borrar.
 1. **Determinista.** El mismo backlog produce el mismo archivo, byte por byte. Sin fechas de
    generación, sin números de corrida, sin nada que cambie solo. Un diff de una vista tiene que ser
    siempre un cambio real del backlog.
-2. **Orden declarado.** Cada vista dice cómo ordena. Sin orden estable, el diff se llena de ruido y
-   deja de servir.
+2. **Orden declarado hasta el desempate.** Cada vista dice cómo ordena, y qué hace cuando dos filas
+   empatan. Un orden parcialmente declarado no es un orden: deja la decisión en manos de la
+   implementación, y dos generadores correctos producen archivos distintos.
+   El orden de identificadores es siempre **numérico**, nunca alfabético: `E4-07` antes que `E19-01`,
+   y `E19-3` antes que `E19-10`. Como texto quedan al revés, y es el error que sale solo.
 3. **Omite, nunca inventa.** Una vista puede dejar afuera información; no puede agregar, interpretar,
-   resumir en palabras propias ni redondear. Un porcentaje redondeado es un dato inventado: se escribe
-   la fracción.
+   resumir en palabras propias, truncar ni redondear. Un porcentaje redondeado es un dato inventado:
+   se escribe la fracción. Si una celda queda impresentable de larga, el problema está en el campo de
+   origen, no en la vista.
+8. **Un solo resultado válido.** Nada opcional: ni abreviaturas, ni formas alternativas de escribir la
+   misma celda. Una vista con dos salidas igualmente correctas no se puede comparar, y comparar es
+   todo lo que hace el gate.
+9. **Varios valores en una celda se unen con ` · `**, en todas las vistas.
 4. **Marcada como generada.** Encabezado fijo, primera línea, diciendo qué la genera y desde dónde.
 5. **No se edita.** Editar una vista es trabajo que se pierde. Si falta un dato, falta en el ítem.
 6. **Valor ausente es `—`.** Un campo opcional vacío se escribe con raya, no con celda en blanco: la
@@ -74,7 +82,7 @@ Agrupada por épica. **El orden es numérico, no alfabético**: `E4-07` va antes
 | `Prio` | `prioridad` |
 | `Estado` | `estado`, tal cual |
 | `Desde` | `fecha_estado`, o `—` |
-| `Depende de` | `depende_de` unido por `, `, o `—` |
+| `Depende de` | `depende_de` unido por ` · `, o `—` |
 
 El encabezado de cada épica sale de `id` y `titulo` de la épica.
 
@@ -125,14 +133,20 @@ sólo se contestaba abriendo los ítems de a uno.
 | el cliente todavía no entregó su lista de transportistas | E19-04 | 2026-08-25 |
 ```
 
-Una fila por **causa**, no por ítem: los ítems que comparten `bloqueado_por` textual se agrupan, y sus
-identificadores van en la misma celda. Un `bloqueado_por` declarado en la épica agrupa a todos sus
-ítems `blocked` que no declaren uno propio.
+Una fila por causa. **El agrupamiento es por texto exacto**, y conviene decirlo sin adornos: dos
+ítems que esperan lo mismo escrito con otras palabras son dos filas. La forma de agrupar de verdad es
+declarar la causa **en la épica** (`bloqueado_por` de §4 de la especificación), y que los ítems no
+declaren la suya.
+
+Contra un backlog real donde cada ítem explicó su bloqueo con sus propias palabras, esta vista produjo
+una fila por ítem — cumpliendo su especificación y no cumpliendo su promesa.
 
 `Desde` es la `fecha_estado` más antigua del grupo — hace cuánto que eso está trabado, no cuándo se
 anotó el último.
 
-Ordenada por `Desde`, la más vieja arriba. Lo que más tiempo lleva parado se lee primero.
+Ordenada por `Desde`, la más vieja arriba. **A igual fecha**, por el identificador del primer ítem del
+grupo. Sin ese desempate el orden lo decide la implementación, y las fechas empatan más de lo que
+parece: en un backlog escrito de una sentada, empatan todas.
 
 ---
 
@@ -196,15 +210,20 @@ hito con una lista escrita a mano.
 | Épica | H1 | H2 | sin hito |
 |---|---|---|---|
 | E4 | E4-03 · E4-07 | E4-11 | — |
-| E19 | E19-01 … E19-09 | — | — |
+| E19 | E19-01 · E19-02 | — | E19-05 |
 ```
 
 La columna `sin hito` no es un defecto: un ítem puede existir sin estar asignado a ningún corte. Que
 se vea es el punto.
 
 Columnas ordenadas por número de hito, con `sin hito` siempre al final. Dentro de cada celda, los
-ítems por identificador, unidos por ` · `. Un rango contiguo se puede abreviar `E19-01 … E19-09`
-**sólo** si no falta ninguno en el medio: abreviar salteando un hueco sería inventar.
+ítems por identificador numérico, unidos por ` · `, **sin abreviar rangos**: la abreviatura ahorraba
+ancho y costaba unicidad, y la regla 8 no admite dos salidas válidas.
+
+**Las columnas salen de los `hito` que declaran los ítems**, que es lo único que esta vista lee. Dos
+consecuencias que hay que conocer: un hito declarado en el plan sin ningún ítem asignado **no
+aparece** —y es justamente el que hay que mirar—, y un ítem que apunte a un hito inexistente crea una
+columna en vez de fallar. Comprobar que el hito existe es trabajo del validador, no de la vista.
 
 ---
 

@@ -2,8 +2,8 @@
 
 Un formato para especificar trabajo de software de modo que **una máquina pueda verificarlo**.
 
-> **Estado: fase 0 cerrada.** El formato está definido y probado contra dos casos reales; todavía no
-> hay herramientas. Ver [el plan](#el-plan).
+> **Estado: fases 0 y 1 cerradas.** El formato está definido, probado contra casos reales, y cuatro de
+> sus cinco vistas se generan. Todavía no hay CLI. Ver [el plan](#el-plan).
 
 ## La idea en un párrafo
 
@@ -60,8 +60,8 @@ distintos.
 | Fase | Entregable | Gate para pasar a la siguiente |
 |---|---|---|
 | **0 · cerrada** | Spec del formato, plantilla, constitución base | ✅ un proyecto real arrancó desde la plantilla en **1 hora** ([prueba 002](docs/pruebas/002-arranque-desde-plantilla/HALLAZGOS.md)) |
-| **1 · en curso** | Un archivo por ítem como fuente; tablas y mapa como vistas generadas | ✅ la tabla generada coincide **byte a byte** con la escrita a mano ([prueba 003](docs/pruebas/003-vistas-generadas/HALLAZGOS.md)) |
-| **2** | CLI: `validate` · `init` · `map` · `status` · `archive` | El validador corre en CI y atrapa una regresión real |
+| **1 · cerrada** | Un archivo por ítem como fuente; tablas y mapa como vistas generadas | ✅ las cuatro vistas derivables se generan y coinciden **byte a byte** con las escritas a mano ([003](docs/pruebas/003-vistas-generadas/HALLAZGOS.md) · [004](docs/pruebas/004-las-otras-vistas/HALLAZGOS.md)) |
+| **2 · próxima** | CLI: `validate` · `init` · `map` · `status` · `archive` | El validador corre en CI y atrapa una regresión real |
 
 El orden importa. Un validador contra un formato que todavía no está definido no valida nada, y el
 formato sólo termina de definirse escribiéndolo y estrellándolo contra un caso real.

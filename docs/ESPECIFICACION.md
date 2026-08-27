@@ -214,7 +214,7 @@ para no tener que revisar a mano qué no salió.
 | `prioridad` | sí | Uno de los niveles definidos por el proyecto en su constitución. |
 | `estado` | sí | Uno de §7. |
 | `fecha_estado` | condicional | Obligatorio cuando el estado es `done` o `blocked`. |
-| `bloqueado_por` | condicional | Obligatorio cuando el estado es `blocked`. Una línea: qué se está esperando, y de quién. |
+| `bloqueado_por` | condicional | Obligatorio cuando el estado es `blocked`. **Una línea corta**: qué se espera y de quién. El detalle va al historial — este campo termina dentro de una celda de tabla. |
 | `depende_de` | no | Lista de identificadores de ítems que deben estar `done` antes de empezar éste. |
 | `hito` | no | El corte de release al que pertenece. Debe existir. Un ítem sin `hito` es legítimo: todavía no entró en ningún corte. |
 

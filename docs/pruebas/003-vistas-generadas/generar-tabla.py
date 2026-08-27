@@ -79,7 +79,7 @@ def main(directorio, salida_path):
                     i["prioridad"],
                     i["estado"],
                     i.get("fecha_estado") or "—",
-                    ", ".join(deps),
+                    " · ".join(deps),
                 )
             )
         salida.append("")
