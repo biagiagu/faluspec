@@ -2,8 +2,9 @@
 
 Un formato para especificar trabajo de software de modo que **una máquina pueda verificarlo**.
 
-> **Estado: fases 0 y 1 cerradas.** El formato está definido, probado contra casos reales, y cuatro de
-> sus cinco vistas se generan. Todavía no hay CLI. Ver [el plan](#el-plan).
+> **Estado: fases 0 y 1 cerradas, fase 2 en curso.** El formato está definido y probado contra casos
+> reales, cuatro de sus cinco vistas se generan, y `faluspec validate` ya atrapa un ancla rota que
+> `tsc` y los tests dejan pasar. Ver [el plan](#el-plan).
 
 ## La idea en un párrafo
 
@@ -43,7 +44,8 @@ resuelve nada.
 ## Qué hay acá
 
 ```
-docs/ESPECIFICACION.md    la definición del formato — v0.4
+cli/                      faluspec validate — Node/TypeScript
+docs/ESPECIFICACION.md    la definición del formato — v0.5
 docs/VISTAS.md            la forma de lo que se genera a partir de los ítems
 docs/decisiones/          por qué existe y contra qué se comparó
 docs/pruebas/             los casos reales contra los que se probó, con sus hallazgos
@@ -61,7 +63,7 @@ distintos.
 |---|---|---|
 | **0 · cerrada** | Spec del formato, plantilla, constitución base | ✅ un proyecto real arrancó desde la plantilla en **1 hora** ([prueba 002](docs/pruebas/002-arranque-desde-plantilla/HALLAZGOS.md)) |
 | **1 · cerrada** | Un archivo por ítem como fuente; tablas y mapa como vistas generadas | ✅ las cuatro vistas derivables se generan y coinciden **byte a byte** con las escritas a mano ([003](docs/pruebas/003-vistas-generadas/HALLAZGOS.md) · [004](docs/pruebas/004-las-otras-vistas/HALLAZGOS.md)) |
-| **2 · próxima** | CLI: `validate` · `init` · `map` · `status` · `archive` | El validador corre en CI y atrapa una regresión real |
+| **2 · en curso** | CLI: `validate` · `init` · `map` · `status` · `archive` | ✅ atrapa una regresión real ([prueba 005](docs/pruebas/005-el-validador-atrapa/HALLAZGOS.md)) · ❌ correr en CI necesita que el CLI sea instalable, que es fase 3 |
 
 El orden importa. Un validador contra un formato que todavía no está definido no valida nada, y el
 formato sólo termina de definirse escribiéndolo y estrellándolo contra un caso real.

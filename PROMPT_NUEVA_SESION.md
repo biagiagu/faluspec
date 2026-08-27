@@ -5,14 +5,14 @@
 ## ▼ COPIAR DESDE ACÁ ▼
 
 Estoy trabajando en **FaLuSpec**, un formato propio para especificar trabajo de software de modo que
-una máquina pueda verificarlo. Las **fases 0 y 1 están cerradas**: el formato va por la **v0.4**, la
-plantilla arranca un proyecto en una hora, y **cuatro de las cinco vistas se generan** y coinciden
-byte a byte con las escritas a mano. Arranca la **fase 2**: el CLI.
+una máquina pueda verificarlo. Las **fases 0 y 1 están cerradas** y la **2 está en curso**: el formato
+va por la **v0.5**, cuatro de las cinco vistas se generan, y `faluspec validate` ya atrapa un ancla
+rota que `tsc` y los tests dejan pasar.
 
 Leé en este orden antes de proponer nada:
 
 1. `README.md` — qué es y el plan de 3 fases con sus gates.
-2. `docs/ESPECIFICACION.md` — el formato, hoy en **v0.4**. Es el entregable central de la fase 0.
+2. `docs/ESPECIFICACION.md` — el formato, hoy en **v0.5**. Es el entregable central de la fase 0.
    `docs/VISTAS.md` — la forma de lo que se genera. Es el entregable central de la fase 1.
 3. `docs/decisiones/001-por-que-existe.md` — contra qué se comparó y qué se tomó de cada alternativa.
 4. El **Log de sesiones** al final de este archivo — empezá por la entrada de arriba.
@@ -23,17 +23,19 @@ Leé en este orden antes de proponer nada:
 **Regla dura del proyecto:** la especificación define *la forma*, nunca *el contenido*. Si una regla
 no se puede enunciar sin nombrar un proyecto, un cliente o un stack concreto, no va en la spec.
 
-**Próximo paso — fase 2, el CLI.** Su gate: el validador corre en CI y atrapa una regresión real.
-Antes de escribir una línea hay que cerrar tres decisiones que condicionan el parser, todas anotadas
-en §9 de la especificación y las tres reclamadas por las pruebas:
+**Próximo paso — hay una decisión trabada y no es técnica.** El gate de la fase 2 tiene dos mitades:
+que el validador atrape una regresión real (✅ demostrado, prueba 005) y que **corra en CI** (❌). Lo
+segundo necesita que el CLI sea **instalable**, y eso es fase 3. El plan de tres fases tenía una
+dependencia cruzada que nadie vio.
 
-1. **Qué subconjunto de YAML es el encabezado** (§9.7). Hoy es implícito: `clave: valor` en una línea.
-2. **Cómo declara un proyecto su versión de formato** (§9.3). Ya salió tres veces; la última, un story
-   map inútil generado desde un backlog viejo sin que nada avisara.
-3. **El lenguaje del CLI**, que sigue sin comprometerse.
+Las salidas están en `docs/pruebas/005-el-validador-atrapa/HALLAZGOS.md`: publicar el CLI (adelantar
+fase 3), vendorizarlo en el repo que lo use, o dejar el gate a medias declarado. **La decisión depende
+de si FaLuSpec va a ser una herramienta que otros usan o el método de un repo** — que es justo lo que
+la fase 3 tenía que resolver.
 
-Los scripts de `docs/pruebas/003` y `004` son **desechables a propósito**: sirvieron para definir las
-vistas, no para ser el CLI. No los promuevas — reimplementalos con lo que las pruebas enseñaron.
+Mientras tanto, lo que sí se puede hacer sin decidir eso: `map` y `status` en el CLI (las vistas ya
+están definidas y probadas, es trabajo mecánico) y `init`. `archive` necesita antes que el formato
+diga qué significa archivar.
 
 Y queda una decisión suelta en el proyecto de origen: el trabajo de la prueba 002 sigue en
 `011-SeguimientoDePedidos`, rama `chore/faluspec-arranque`, **sin mergear a `develop`**.
@@ -154,6 +156,42 @@ ciclos de diez comandos.
 ---
 
 ## Log de sesiones
+
+### 2026-08-26 (5) — El CLI, y el gate que depende de la fase 3
+
+**Qué se hizo.** Se confirmó Node/TypeScript (decisión 002) y se escribió `faluspec validate`:
+**52 tests en verde**, sin dependencias de runtime salvo el compilador de TypeScript.
+
+Antes, la **v0.5** cerró las dos decisiones abiertas que condicionaban el parser: el encabezado **no
+es YAML** sino un subconjunto declarado (§3.6), y un proyecto declara su versión en `.faluspec` (§10).
+Las dos se cerraron antes de escribir código, que era el motivo por el que estaban anotadas.
+
+**Lo que hace el validador.** Las reglas de §2.2 y §3.3 que se leen del backlog, y —lo que importa—
+**que cada ancla resuelva**, con el AST de TypeScript: símbolos no exportados incluidos, un nivel de
+propiedad (`#esquema.CLAVE` dentro de un `z.object`), archivo entero, directorio con barra, y
+`ninguna` con motivo. Para lenguajes que no sabe parsear cae a coincidencia textual **y lo declara en
+la salida**: prometer una resolución que no se tiene sería la mentira que el formato quiere evitar.
+
+**El gate, primera mitad: cumplido.** Se renombró `GOOGLE_HD_PLACEHOLDER` en 011, como haría cualquier
+refactor. `tsc` calló, los tests habrían pasado, el lint también — **y el validador señaló el ancla
+rota**. Es la decisión fundacional del formato dando su primer resultado concreto.
+
+**El gate, segunda mitad: bloqueado, y no por código.** «Corre en CI» necesita que el CLI sea
+instalable, y no hay de dónde bajarlo: este repo no tiene remoto ni paquete publicado. El paso quedó
+escrito y **comentado** en el `ci.yml` de 011 — no con `continue-on-error`, porque un paso que dice
+que valida y no valida es peor que no tenerlo.
+
+**El hallazgo de planificación:** el gate de la fase 2 depende de la fase 3. Las tres fases se
+escribieron como una secuencia y no lo son.
+
+**Lo que encontró en 011** (arreglado allá, commit `adba77b`): un ancla a directorio sin la barra
+final, que sobrevivió a dos revisiones humanas; y `E19-01` cerrado sin declarar impacto — y el impacto
+que faltaba era que ese ítem **movió el gate de promoción a test**.
+
+**Pendiente.** La decisión de distribución (ver «Próximo paso»), y mergear o no
+`chore/faluspec-arranque` en 011.
+
+**Estado del repo.** `main`, sin remoto.
 
 ### 2026-08-26 (4) — Las otras vistas · fase 1 cerrada
 
