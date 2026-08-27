@@ -1,7 +1,7 @@
 # 002 — El CLI se escribe en Node/TypeScript
 
 - **Fecha:** 2026-08-26
-- **Estado:** **propuesta** — falta confirmación del dueño del proyecto
+- **Estado:** decidida · confirmada el 2026-08-26
 - **Alternativas evaluadas:** Node/TypeScript · Python · Go · no hacer CLI
 
 ## Contexto
@@ -61,8 +61,7 @@ exactamente el tipo de mentira que este formato existe para evitar.
   es motivo para escribir un resolvedor por lenguaje, no para cambiar de decisión.
 - Hay que decidir empaquetado y nombre en npm antes de publicar, y publicar es decisión de la fase 3.
 
-## Pendiente de confirmación
+## Ejecución
 
-Esta decisión **no está ejecutada**. Nada del CLI está escrito. Si preferís Python o Go, el único
-argumento que hay que responder es el punto 2 —cómo se resuelven las anclas— y el resto de la fase 2
-no cambia.
+Confirmada el 2026-08-26. El CLI vive en `cli/`, Node 20 + TypeScript, gestionado con pnpm, sin
+dependencias de runtime salvo el compilador de TypeScript para resolver anclas.

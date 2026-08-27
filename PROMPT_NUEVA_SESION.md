@@ -77,8 +77,12 @@ versionado junto al código. No compite con Jira ni Linear.
 
 - **Fase 0 es sólo documentos.** No escribir CLI hasta cerrar el gate de la fase 1. Un validador
   contra un formato que todavía no está definido no valida nada.
-- **Lenguaje del futuro CLI: sin decidir.** Node/TypeScript es lo natural por el resto del ecosistema
-  del usuario, pero no está comprometido.
+- **Lenguaje del CLI: Node/TypeScript** (decisión 002, confirmada 2026-08-26). Lo decidió la
+  resolución de anclas, no el ecosistema: `archivo#simbolo` para un lenguaje arbitrario es un problema
+  abierto, y para TS/JS lo resuelve el AST del compilador. Consecuencia asumida: **el formato es
+  portable, la herramienta no**. Un proyecto Python que adopte FaLuSpec tendría chequeo de anclas por
+  texto — y si eso pasa, es motivo para escribir un resolvedor por lenguaje, no para cambiar de
+  decisión.
 - **Rama única: `main`.** Se descartó el esquema `develop → test → main` que el usuario usa en
   proyectos desplegables: esto no tiene ambientes ni deploy. Si en la fase 2 aparece un CLI publicable,
   reevaluar.
