@@ -3,8 +3,12 @@
   "version": "0.1.0",
   "description": "Valida un backlog FaLuSpec y genera sus vistas",
   "type": "module",
-  "bin": { "faluspec": "./dist/cli.js" },
-  "engines": { "node": ">=20" },
+  "bin": {
+    "faluspec": "./dist/cli.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
@@ -17,5 +21,19 @@
     "@types/node": "^20.19.0",
     "typescript": "^5.6.0",
     "vitest": "^2.1.0"
-  }
+  },
+  "license": "MIT",
+  "author": "Agustin Biagi",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/biagiagu/faluspec.git"
+  },
+  "keywords": [
+    "spec",
+    "backlog",
+    "specification",
+    "agents",
+    "requirements",
+    "traceability"
+  ]
 }

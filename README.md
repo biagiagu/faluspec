@@ -76,6 +76,12 @@ distintos.
 El orden importa. Un validador contra un formato que todavía no está definido no valida nada, y el
 formato sólo termina de definirse escribiéndolo y estrellándolo contra un caso real.
 
+## Licencia
+
+[MIT](LICENSE). En particular: **la especificación se puede implementar libremente.** Si querés
+escribir tu propio validador, generador de vistas o plugin de editor para este formato, no necesitás
+permiso de nadie — es justamente lo que se busca.
+
 ## Origen
 
 FaLuSpec no se diseñó de cero: se **destiló** de una forma de trabajo que ya funcionaba en dos
