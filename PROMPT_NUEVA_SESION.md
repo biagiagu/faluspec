@@ -28,10 +28,11 @@ no se puede enunciar sin nombrar un proyecto, un cliente o un stack concreto, no
 en CI») está bloqueado porque el CLI no se puede instalar, y siendo público la salida es publicarlo,
 no vendorizarlo. Lo que hace falta, en orden:
 
-1. **Licencia.** El repo no tiene ninguna. Sin licencia, «público» es una intención y no un permiso.
-   Es tu decisión: MIT es lo habitual para algo que se quiere que se adopte.
-2. **Remoto.** El repo es local. `faluspec` está libre en npm (verificado 2026-08-26).
-3. **Publicar el CLI**, activar el paso ya escrito en el `ci.yml` de 011 y cerrar el gate.
+1. ~~Licencia~~ ✅ MIT. ~~Remoto~~ ✅ <https://github.com/biagiagu/faluspec>.
+2. **Publicar el CLI en npm.** `faluspec` estaba libre al 2026-08-26. Ojo: el nombre se toma
+   publicando y **el primer publish es casi irreversible** — despublicar bloquea el nombre para
+   siempre, incluso para vos.
+3. **Activar el paso ya escrito en el `ci.yml` de 011** y cerrar el gate de la fase 2.
 
 Antes de publicar hay una deuda de diseño anotada en la decisión 003: **la resolución de anclas está
 adentro del validador y tiene que salir a una interfaz por lenguaje.** Hoy un proyecto que no sea
@@ -93,7 +94,8 @@ versionado junto al código. No compite con Jira ni Linear.
 - **Rama única: `main`.** Se descartó el esquema `develop → test → main` que el usuario usa en
   proyectos desplegables: esto no tiene ambientes ni deploy. Si en la fase 2 aparece un CLI publicable,
   reevaluar.
-- **Sin remoto configurado.** El repo es local. Publicarlo es decisión de la fase 3.
+- **Repo público en GitHub:** <https://github.com/biagiagu/faluspec>, licencia **MIT**. La spec se
+  puede implementar libremente: escribir otro validador o generador no necesita permiso de nadie.
 
 ### Del formato (ya tomadas, revisables con argumento)
 
@@ -161,6 +163,27 @@ ciclos de diez comandos.
 ---
 
 ## Log de sesiones
+
+### 2026-08-28 — Licencia MIT y repo público
+
+**Qué se hizo.** FaLuSpec dejó de ser local: <https://github.com/biagiagu/faluspec>, licencia **MIT**,
+todo el historial publicado.
+
+**Antes de publicar se revisó qué se exponía**, porque el banco de pruebas tiene contenido derivado de
+un proyecto real. No había secretos, ni datos de cliente, ni dominios internos: el `CLIENTE.com.ar`
+que aparece es un placeholder ya anonimizado en el proyecto de origen. Lo que sí queda visible es que
+existe `011-SeguimientoDePedidos`, su stack y algunos de sus símbolos — nada de eso es sensible, y las
+pruebas son la evidencia de que el formato se probó contra algo real, que es lo más valioso que tiene
+el repo.
+
+**El README dice lo que la licencia sola no dice** y es lo que importa para un formato: la
+especificación se puede implementar libremente. Otro validador, otro generador de vistas o un plugin
+de editor no necesitan permiso de nadie.
+
+**Pendiente.** Publicar el CLI en npm y activar el paso del `ci.yml` de 011 — con eso cierra el gate
+de la fase 2. Y sigue sin decidirse si `chore/faluspec-arranque` se mergea a `develop` en 011.
+
+**Estado del repo.** `main`, con remoto `origin`, todo pusheado.
 
 ### 2026-08-26 (6) — FaLuSpec es público, y el formato pasa a inglés
 
