@@ -1,18 +1,34 @@
 # faluspec
 
-CLI del formato. Hoy hace una sola cosa: `validate`.
+CLI del formato.
+
+```bash
+npx faluspec init .          # deja la plantilla en el proyecto, sin pisar nada
+npx faluspec validate .      # valida el backlog y comprueba que cada ancla resuelva
+```
+
+Códigos de salida de `validate`: `0` sin errores · `1` con errores · `2` no se pudo ni empezar.
+
+## `init`
+
+Deja la plantilla en un proyecto y **no pisa nada**: si un archivo ya existe, lo dice y sigue. Un
+proyecto que ya existe es el caso normal, no la excepción, y perder el README de alguien por instalar
+una herramienta sería imperdonable. Correrlo dos veces es inofensivo.
+
+El README de la plantilla va a `docs/ARRANQUE-FALUSPEC.md`, no a la raíz — ahí ya está el del
+proyecto.
+
+## Desarrollo
 
 ```bash
 pnpm install
-pnpm build
-node dist/cli.js validate <directorio del proyecto>
+pnpm test
+pnpm build && node dist/cli.js validate <directorio>
 ```
 
 El proyecto tiene que tener un `backlog/` y un `.faluspec` en su raíz. **Si falta el `.faluspec`, el
 comando falla y dice cómo crearlo**: no adivina la versión, porque adivinar mal produce un resultado
 que parece correcto (§10 de la especificación).
-
-Códigos de salida: `0` sin errores · `1` con errores · `2` no se pudo ni empezar.
 
 ## Qué comprueba hoy
 

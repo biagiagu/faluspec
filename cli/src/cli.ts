@@ -11,16 +11,25 @@ import { join, resolve } from "node:path";
 import { leerBacklog } from "./formato/backlog.js";
 import { validarEstructura, comparar, type Hallazgo } from "./reglas/estructura.js";
 import { validarAnclas } from "./reglas/anclas.js";
+import { init } from "./init.js";
 
 const VERSIONES_CONOCIDAS = new Set(["0.6"]);
 
+const USO = `faluspec — el CLI del formato
+
+  faluspec init [directorio]       deja la plantilla en un proyecto, sin pisar nada
+  faluspec validate [directorio]   valida el backlog y comprueba que cada ancla resuelva
+
+Sin directorio, trabaja sobre el actual.
+`;
+
 function main(argv: string[]): number {
   const [comando = "", ...resto] = argv;
-  if (comando !== "validate") {
-    process.stderr.write("uso: faluspec validate [directorio del proyecto]\n");
-    return 2;
-  }
-  return validate(resolve(resto[0] ?? "."));
+  const donde = resolve(resto[0] ?? ".");
+  if (comando === "init") return init(donde);
+  if (comando === "validate") return validate(donde);
+  process.stderr.write(USO);
+  return 2;
 }
 
 function validate(raiz: string): number {
@@ -29,7 +38,7 @@ function validate(raiz: string): number {
     process.stderr.write(
       `no encuentro \`.faluspec\` en ${raiz}\n` +
         "  Un proyecto declara contra qué versión del formato está escrito (§10).\n" +
-        "  Crealo con una línea: 0.6\n",
+        "  Si estás arrancando, `faluspec init` lo crea junto con el resto.\n",
     );
     return 2;
   }
@@ -67,6 +76,13 @@ function validate(raiz: string): number {
     (ninguna ? ` · ${ninguna} declaradas none` : "") +
     (rotas ? ` · ${rotas} ROTAS` : "");
   const cuantos = `${backlog.items.size} ítems · ${backlog.epicas.size} épicas · ${cuantas}`;
+  if (backlog.items.size === 0) {
+    // Un backlog vacío no es inválido, pero decir «válido» de algo que no
+    // afirma nada es vacuo. Que se note que todavía no hay nada que validar.
+    process.stdout.write(`el backlog está vacío — ${cuantos}
+`);
+    return 0;
+  }
   if (hallazgos.length === 0) {
     process.stdout.write(`backlog válido — ${cuantos}\n`);
   } else {
